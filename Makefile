@@ -11,3 +11,11 @@ lint:
 .PHONY: compose-check
 compose-check:
 	bash ./scripts/compose-check.sh
+
+.PHONY: frontend-env
+frontend-env:
+	bash ./scripts/sync-frontend-env.sh
+
+.PHONY: frontend-dev
+frontend-dev:
+	cd ActionAct/frontend && npm run dev

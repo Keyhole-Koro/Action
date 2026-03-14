@@ -24,6 +24,7 @@
 
 ```bash
 make compose-check
+make frontend-env
 docker compose --profile ui up
 docker compose --profile full up
 ```
@@ -70,7 +71,13 @@ docker compose --profile full up
 make compose-check
 ```
 
-`make compose-check` はディレクトリ不在を error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
+`make compose-check` は `config/local/frontend.env` の存在と bind mount の解決先を確認します。ディレクトリ不在は error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
+
+Frontend の `.env.local` を共有設定から同期したい場合は次を使います。
+
+```bash
+make frontend-env
+```
 
 ### 主な環境変数
 
@@ -79,6 +86,9 @@ make compose-check
 
 Frontend:
 
+* 正本ファイル: `config/local/frontend.env`
+  * `docker compose` はこのファイルを `env_file` として読みます
+  * `npm run dev` / `npm run build` / `npm run start` は起動前にこの内容を `ActionAct/frontend/.env.local` へ同期します
 * `NEXT_PUBLIC_USE_MOCKS`
   * compose 注入値 `true`
   * `false` にすると実サービス接続前提になります
@@ -122,6 +132,7 @@ Organize / Act ADK Worker:
   * compose 注入値 `true`
 
 これらの値を変える場合は、`compose.yaml` を直接編集するか、override 用 compose file を追加してください。
+Frontend の `NEXT_PUBLIC_*` を変える場合は、まず `config/local/frontend.env` を編集してください。
 
 Optional override:
 

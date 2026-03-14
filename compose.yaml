@@ -8,15 +8,11 @@ services:
     working_dir: /workspace
     volumes:
       - ${FRONTEND_DIR:-./ActionAct/frontend}:/workspace
+    env_file:
+      - ./config/local/frontend.env
     environment:
       PORT: "3000"
       HOSTNAME: "0.0.0.0"
-      NEXT_PUBLIC_USE_MOCKS: "true"
-      NEXT_PUBLIC_RPC_BASE_URL: http://localhost:8080
-      NEXT_PUBLIC_ACT_API_BASE_URL: http://localhost:8080
-      NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
-      NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST: localhost:8081
-      NEXT_PUBLIC_GCLOUD_PROJECT: local-dev
     command: >-
       bash -lc '
       set -eu;
