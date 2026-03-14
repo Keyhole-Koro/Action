@@ -12,6 +12,7 @@ import (
 	"act-api/gen/act/v1/actv1connect"
 
 	"connectrpc.com/connect"
+	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -70,9 +71,17 @@ func main() {
 	path, handler := actv1connect.NewActServiceHandler(&actServer{})
 	mux.Handle(path, handler)
 
+	// CORS設定: ブラウザ(Next.js)からのConnect RPC通信を許可
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // 開発用
+		AllowedMethods: []string{http.MethodGet, http.MethodPost},
+		AllowedHeaders: []string{"*"}, // Connectに必要なヘッダー(Content-Type, Connect-Protocol-Version等)を許可
+		ExposedHeaders: []string{"*"},
+	}).Handler(mux)
+
 	addr := fmt.Sprintf("0.0.0.0:%s", port)
 	// Connect RPC は HTTP/2 を推奨するため h2c を使用してサーバーを起動
-	if err := http.ListenAndServe(addr, h2c.NewHandler(mux, &http2.Server{})); err != nil {
+	if err := http.ListenAndServe(addr, h2c.NewHandler(corsHandler, &http2.Server{})); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }
