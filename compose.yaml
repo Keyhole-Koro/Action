@@ -87,10 +87,10 @@ services:
     environment:
       PORT: "8000"
       GOOGLE_CLOUD_PROJECT: local-dev
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
-      VERTEX_USE_REAL_API: "true"
-      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
+      VERTEX_USE_REAL_API: "false"
     command: >-
       bash -lc ' set -eu; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
