@@ -128,6 +128,7 @@ services:
       - ${ORGANIZE_DIR:-./ActionOrganize}:/workspace
     environment:
       PORT: "8090"
+      STATE_BACKEND: ${STATE_BACKEND:-firestore}
       GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
       PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
       PUBSUB_TOPIC_NAME: ${PUBSUB_TOPIC_NAME:-mind-events}
