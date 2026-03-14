@@ -8,6 +8,8 @@ set -euo pipefail
 TOPIC="mind-events"
 DLQ_TOPIC="mind-events-dlq"
 SUBSCRIPTIONS=(
+  "sub-a0"
+  "sub-a1"
   "sub-topic-resolver"
   "sub-a2"
   "sub-a3b"
