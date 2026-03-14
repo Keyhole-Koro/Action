@@ -1,0 +1,297 @@
+name: action-local
+
+services:
+  frontend:
+    profiles: ["ui", "full"]
+    image: node:22-bookworm
+    init: true
+    working_dir: /workspace
+    volumes:
+      - ${FRONTEND_DIR:-./frontend}:/workspace
+    environment:
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      NEXT_PUBLIC_USE_MOCKS: ${NEXT_PUBLIC_USE_MOCKS:-true}
+      NEXT_PUBLIC_RPC_BASE_URL: ${NEXT_PUBLIC_RPC_BASE_URL:-http://localhost:8080}
+      NEXT_PUBLIC_ACT_API_BASE_URL: ${NEXT_PUBLIC_ACT_API_BASE_URL:-http://localhost:8080}
+      NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST: ${NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST:-localhost:9099}
+      NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST: ${NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST:-localhost:8081}
+      NEXT_PUBLIC_GCLOUD_PROJECT: ${NEXT_PUBLIC_GCLOUD_PROJECT:-local-dev}
+    command: >-
+      bash -lc '
+      set -eu;
+      corepack enable;
+      if [ -f pnpm-lock.yaml ]; then
+        pnpm install --frozen-lockfile || pnpm install;
+        pnpm dev --hostname 0.0.0.0 --port "$${PORT}";
+      elif [ -f yarn.lock ]; then
+        corepack prepare yarn@stable --activate;
+        yarn install --frozen-lockfile || yarn install;
+        yarn dev --host 0.0.0.0 --port "$${PORT}";
+      elif [ -f package.json ]; then
+        npm ci || npm install;
+        npm run dev -- --hostname 0.0.0.0 --port "$${PORT}";
+      else
+        echo "frontend source not found under $${PWD}. Set FRONTEND_DIR to the real app path.";
+        sleep infinity;
+      fi'
+    depends_on:
+      act-api:
+        condition: service_started
+    ports:
+      - "3000:3000"
+    networks:
+      - clarify-net
+
+  act-api:
+    profiles: ["ui", "full"]
+    image: golang:1.24-bookworm
+    init: true
+    working_dir: /workspace
+    volumes:
+      - ${ACT_API_DIR:-./act/act-api}:/workspace
+    environment:
+      PORT: "8080"
+      REDIS_ADDR: redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "0"
+      ACT_ADK_WORKER_URL: http://act-adk-worker:8000
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
+      FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
+      FIREBASE_AUTH_EMULATOR_HOST: firebase-emulator:9099
+      STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      SID_STRICT: ${SID_STRICT:-true}
+      SID_REQ_TTL_SECONDS: ${SID_REQ_TTL_SECONDS:-900}
+      SID_LOCK_TTL_SECONDS: ${SID_LOCK_TTL_SECONDS:-10}
+    command: >-
+      bash -lc '
+      set -eu;
+      if [ -f go.mod ]; then
+        go run ./cmd/act-api;
+      else
+        echo "act-api source not found under $${PWD}. Set ACT_API_DIR to the real app path.";
+        sleep infinity;
+      fi'
+    depends_on:
+      redis:
+        condition: service_healthy
+      act-adk-worker:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    networks:
+      - clarify-net
+
+  act-adk-worker:
+    profiles: ["ui", "full"]
+    image: python:3.12-bookworm
+    init: true
+    working_dir: /workspace
+    volumes:
+      - ${ACT_ADK_WORKER_DIR:-./act/act-adk-worker}:/workspace
+    environment:
+      PORT: "8000"
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
+      FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
+      STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      VERTEX_USE_REAL_API: ${VERTEX_USE_REAL_API:-false}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
+    command: >-
+      bash -lc '
+      set -eu;
+      python -m pip install --no-cache-dir --upgrade pip;
+      if [ -f requirements.txt ]; then
+        pip install --no-cache-dir -r requirements.txt;
+      elif [ -f pyproject.toml ]; then
+        pip install --no-cache-dir -e .;
+      else
+        pip install --no-cache-dir fastapi uvicorn;
+      fi;
+      if [ -f app/main.py ]; then
+        uvicorn app.main:app --host 0.0.0.0 --port "$${PORT}" --reload;
+      else
+        echo "act-adk-worker source not found under $${PWD}. Set ACT_ADK_WORKER_DIR to the real app path.";
+        sleep infinity;
+      fi'
+    ports:
+      - "8000:8000"
+    networks:
+      - clarify-net
+
+  organize:
+    profiles: ["full"]
+    image: node:22-bookworm
+    init: true
+    working_dir: /workspace
+    volumes:
+      - ${ORGANIZE_DIR:-./organize}:/workspace
+    environment:
+      PORT: "8090"
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
+      STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      VERTEX_USE_REAL_API: ${VERTEX_USE_REAL_API:-false}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
+    command: >-
+      bash -lc '
+      set -eu;
+      corepack enable;
+      if [ -f pnpm-lock.yaml ]; then
+        pnpm install --frozen-lockfile || pnpm install;
+        pnpm dev;
+      elif [ -f yarn.lock ]; then
+        corepack prepare yarn@stable --activate;
+        yarn install --frozen-lockfile || yarn install;
+        yarn dev;
+      elif [ -f package.json ]; then
+        npm ci || npm install;
+        npm run dev;
+      else
+        echo "organize source not found under $${PWD}. Set ORGANIZE_DIR to the real app path.";
+        sleep infinity;
+      fi'
+    depends_on:
+      pubsub-emulator:
+        condition: service_healthy
+      firebase-emulator:
+        condition: service_healthy
+      gcs-emulator:
+        condition: service_started
+    ports:
+      - "8090:8090"
+    networks:
+      - clarify-net
+
+  redis:
+    profiles: ["ui", "full"]
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - clarify-net
+
+  firebase-emulator:
+    profiles: ["full"]
+    image: node:22-bookworm
+    init: true
+    working_dir: /workspace
+    volumes:
+      - ./docker/firebase:/workspace:ro
+      - firebase-emulator-data:/data
+    environment:
+      GCLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
+      FIREBASE_CLI_EXPERIMENTS: webframeworks
+    command: >-
+      bash -lc '
+      set -eu;
+      npm install -g firebase-tools;
+      firebase emulators:start
+      --project "$${GCLOUD_PROJECT}"
+      --config /workspace/firebase.json
+      --only auth,firestore
+      --import /data
+      --export-on-exit
+      --ui=false'
+    ports:
+      - "8081:8081"
+      - "9099:9099"
+      - "4000:4000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "bash -lc 'cat < /dev/null > /dev/tcp/127.0.0.1/8081 && cat < /dev/null > /dev/tcp/127.0.0.1/9099'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - clarify-net
+
+  gcs-emulator:
+    profiles: ["full"]
+    image: ${GCS_EMULATOR_IMAGE:-fsouza/fake-gcs-server:latest}
+    command: ["-scheme", "http", "-port", "4443", "-external-url", "http://gcs-emulator:4443", "-data", "/data"]
+    ports:
+      - "4443:4443"
+    volumes:
+      - gcs-emulator-data:/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://127.0.0.1:4443/storage/v1/b >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - clarify-net
+
+  pubsub-emulator:
+    profiles: ["full"]
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:stable
+    init: true
+    command:
+      [
+        "gcloud",
+        "beta",
+        "emulators",
+        "pubsub",
+        "start",
+        "--project=local-dev",
+        "--host-port=0.0.0.0:8085",
+      ]
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "bash -lc 'cat < /dev/null > /dev/tcp/127.0.0.1/8085'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - clarify-net
+
+  pubsub-bootstrap:
+    profiles: ["full"]
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:stable
+    init: true
+    restart: "no"
+    working_dir: /bootstrap
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_PROJECT_ID: ${GOOGLE_CLOUD_PROJECT:-local-dev}
+      ORGANIZE_PUSH_ENDPOINT: http://organize:8090/events
+    volumes:
+      - ./docker/pubsub:/bootstrap:ro
+    command: ["bash", "/bootstrap/init.sh"]
+    depends_on:
+      pubsub-emulator:
+        condition: service_healthy
+      organize:
+        condition: service_started
+    networks:
+      - clarify-net
+
+networks:
+  clarify-net:
+    name: clarify-net
+
+volumes:
+  redis-data:
+  firebase-emulator-data:
+  gcs-emulator-data:

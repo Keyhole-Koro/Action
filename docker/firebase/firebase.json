@@ -1,0 +1,21 @@
+{
+  "emulators": {
+    "ui": {
+      "enabled": true,
+      "host": "0.0.0.0",
+      "port": 4000
+    },
+    "auth": {
+      "host": "0.0.0.0",
+      "port": 9099
+    },
+    "firestore": {
+      "host": "0.0.0.0",
+      "port": 8081,
+      "rules": "firestore.rules"
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
