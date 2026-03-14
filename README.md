@@ -24,7 +24,6 @@
 
 ```bash
 make compose-check
-make frontend-env
 docker compose --profile ui up
 docker compose --profile full up
 ```
@@ -71,13 +70,7 @@ docker compose --profile full up
 make compose-check
 ```
 
-`make compose-check` は `config/local/frontend.env` の存在と bind mount の解決先を確認します。ディレクトリ不在は error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
-
-Frontend の `.env.local` を共有設定から同期したい場合は次を使います。
-
-```bash
-make frontend-env
-```
+`make compose-check` は bind mount の解決先を確認します。ディレクトリ不在は error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
 
 ### 主な環境変数
 
@@ -86,24 +79,11 @@ make frontend-env
 
 Frontend:
 
-* 正本ファイル: `config/local/frontend.env`
-  * `docker compose` はこのファイルを `env_file` として読みます
-  * `npm run dev` / `npm run build` / `npm run start` は起動前にこの内容を `ActionAct/frontend/.env.local` へ同期します
-* `NEXT_PUBLIC_USE_MOCKS`
-  * compose 注入値 `true`
-  * `false` にすると実サービス接続前提になります
-* `NEXT_PUBLIC_RPC_BASE_URL`
-  * compose 注入値 `http://localhost:8080`
-  * Frontend から Connect RPC を呼ぶベース URL です
-* `NEXT_PUBLIC_ACT_API_BASE_URL`
-  * compose 注入値 `http://localhost:8080`
-  * Frontend から Act API HTTP を呼ぶベース URL です
-* `NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST`
-  * compose 注入値 `localhost:9099`
-* `NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST`
-  * compose 注入値 `localhost:8081`
-* `NEXT_PUBLIC_GCLOUD_PROJECT`
-  * compose 注入値 `local-dev`
+* 正本ファイル:
+  * local: `ActionAct/frontend/src/config/local.json`
+  * prod: `ActionAct/frontend/src/config/prod.json`
+* `src/lib/config.ts` が `NODE_ENV` に応じて読み分けます
+* frontend に秘密情報は置かず、必要なら server 側で環境変数を読む前提です
 
 Act API:
 
@@ -132,7 +112,7 @@ Organize / Act ADK Worker:
   * compose 注入値 `true`
 
 これらの値を変える場合は、`compose.yaml` を直接編集するか、override 用 compose file を追加してください。
-Frontend の `NEXT_PUBLIC_*` を変える場合は、まず `config/local/frontend.env` を編集してください。
+Frontend の公開設定を変える場合は、`ActionAct/frontend/src/config/local.json` または `ActionAct/frontend/src/config/prod.json` を編集してください。
 
 Optional override:
 
@@ -142,7 +122,7 @@ Optional override:
 
 ### 補足
 
-* `frontend` の `NEXT_PUBLIC_*` はブラウザから参照するため、既定では `localhost` 向けにしています
+* `frontend` の公開設定は JSON 正本で管理しています
 * `full` profile では [docker/pubsub/init.sh](/home/unix/Action/docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
 * Firebase の最小設定は [docker/firebase/firebase.json](/home/unix/Action/docker/firebase/firebase.json) にあります
 * `full` profile の emulator image には Java を同梱しているため、追加の Java セットアップなしで起動できます

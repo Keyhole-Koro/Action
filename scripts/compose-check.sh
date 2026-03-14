@@ -9,7 +9,6 @@ act_api_dir="${ACT_API_DIR:-./ActionAct/act-api}"
 act_adk_worker_dir="${ACT_ADK_WORKER_DIR:-./ActionAct/act-adk-worker}"
 organize_dir="${ORGANIZE_DIR:-./ActionOrganize}"
 gcs_emulator_image="${GCS_EMULATOR_IMAGE:-fsouza/fake-gcs-server:latest}"
-frontend_env_file="$ROOT_DIR/config/local/frontend.env"
 
 resolve_path() {
   local input="$1"
@@ -41,11 +40,6 @@ check_dir() {
 }
 
 printf 'Checking compose inputs in %s\n' "$ROOT_DIR"
-if [[ ! -f "$frontend_env_file" ]]; then
-  printf 'ERROR: frontend env file not found: %s\n' "$frontend_env_file" >&2
-  exit 1
-fi
-printf 'FRONTEND_ENV_FILE: %s\n' "$frontend_env_file"
 check_dir "FRONTEND_DIR" "$frontend_dir" "package.json"
 check_dir "ACT_API_DIR" "$act_api_dir" "go.mod"
 check_dir "ACT_ADK_WORKER_DIR" "$act_adk_worker_dir" "app/main.py"

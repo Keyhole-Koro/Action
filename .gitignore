@@ -14,4 +14,7 @@ dist/
 build/
 *.egg-info/
 
+# Emulator debug logs
+docker/firebase/*debug.log
+
 tmp
