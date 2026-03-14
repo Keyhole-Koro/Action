@@ -49,7 +49,7 @@ services:
     init: true
     working_dir: /workspace
     volumes:
-      - ${ACT_API_DIR:-./act/act-api}:/workspace
+      - ${ACT_API_DIR:-./ActionAct/act-api}:/workspace
     environment:
       PORT: "8080"
       REDIS_ADDR: redis:6379
@@ -89,7 +89,7 @@ services:
     init: true
     working_dir: /workspace
     volumes:
-      - ${ACT_ADK_WORKER_DIR:-./act/act-adk-worker}:/workspace
+      - ${ACT_ADK_WORKER_DIR:-./ActionAct/act-adk-worker}:/workspace
     environment:
       PORT: "8000"
       GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}

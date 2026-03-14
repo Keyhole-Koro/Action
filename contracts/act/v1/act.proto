@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package act.v1;
+
+option go_package = "act-api/gen/act/v1;actv1";
+
+// RunActRequest は RunAct の入力契約。
+// topic_id, workspace_id, request_id, act_type, user_message は必須。
+message RunActRequest {
+  // 知識正本キー（必須）
+  string topic_id = 1;
+  // workspace 境界（必須）
+  string workspace_id = 2;
+  // 冪等用UUID（必須）
+  string request_id = 3;
+  // 実行タイプ（必須）
+  ActType act_type = 4;
+  // ユーザー入力（必須）
+  string user_message = 5;
+  // 起点ノード
+  string anchor_node_id = 6;
+  // 明示コンテキストノード群
+  repeated string context_node_ids = 7;
+  // モデル設定（省略可）
+  LLMConfig llm_config = 8;
+  // 旧クライアント互換用。認証正本には使わない（deprecated）
+  string uid = 9;
+}
+
+enum ActType {
+  ACT_TYPE_UNSPECIFIED = 0;
+  ACT_TYPE_EXPLORE = 1;
+  ACT_TYPE_CONSULT = 2;
+  ACT_TYPE_INVESTIGATE = 3;
+}
+
+message LLMConfig {
+  string model = 1;
+  bool enable_grounding = 2;
+  bool enable_thinking = 3;
+}
+
+// RunActEvent はサーバーストリームのレスポンス。
+// text_delta or patch_ops or terminal のいずれかを持つ。
+message RunActEvent {
+  oneof event {
+    TextDelta text_delta = 1;
+    PatchOps patch_ops = 2;
+    Terminal terminal = 3;
+  }
+  // true のとき thought（思考ストリーム）。false のとき通常回答。
+  bool is_thought = 4;
+}
+
+message TextDelta {
+  string text = 1;
+}
+
+message PatchOps {
+  repeated PatchOp ops = 1;
+}
+
+message PatchOp {
+  string op = 1;        // "upsert" or "append_md"
+  string node_id = 2;
+  string content = 3;
+}
+
+message Terminal {
+  bool done = 1;
+  ErrorInfo error = 2;
+}
+
+message ErrorInfo {
+  string code = 1;
+  string message = 2;
+  bool retryable = 3;
+  string stage = 4;
+  string trace_id = 5;
+  int64 retry_after_ms = 6;
+}
+
+service ActService {
+  rpc RunAct(RunActRequest) returns (stream RunActEvent) {}
+}

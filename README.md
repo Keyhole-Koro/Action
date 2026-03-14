@@ -4,6 +4,13 @@
 
 ローカル起動用の compose は [compose.yaml](/home/unix/Action/compose.yaml) にあります。
 
+この repo の現状では、compose でそのまま参照できる実装ディレクトリは次の 2 つです。
+
+* `frontend`: `./ActionAct/frontend`
+* `organize`: `./ActionOrganize`
+
+`act-api` と `act-adk-worker` はまだこの repo に実装が無いため、起動する場合は `ACT_API_DIR` / `ACT_ADK_WORKER_DIR` を明示的に上書きしてください。
+
 ### Profiles
 
 * `ui`
@@ -35,29 +42,39 @@ docker compose down
 
 ### 実コードの配置
 
-compose の既定値は次のディレクトリを bind mount します。
+compose の既定 bind mount は次のとおりです。
 
-* `./frontend`
-* `./act/act-api`
-* `./act/act-adk-worker`
-* `./ActionOrganize`
+* `FRONTEND_DIR=./ActionAct/frontend`
+* `ACT_API_DIR=./ActionAct/act-api`
+* `ACT_ADK_WORKER_DIR=./ActionAct/act-adk-worker`
+* `ORGANIZE_DIR=./ActionOrganize`
 
-この repo の現状では、実在する既定値は次の 2 つです。
+このうち、今の repo で実在する既定値は次の 2 つです。
 
 * `FRONTEND_DIR=./ActionAct/frontend`
 * `ORGANIZE_DIR=./ActionOrganize`
 
-実際の配置が異なる場合は、起動時に環境変数で上書きしてください。
+`ui` profile を本当に動かすには `ACT_API_DIR` と `ACT_ADK_WORKER_DIR` を上書きする必要があります。
+
+例:
 
 ```bash
-FRONTEND_DIR=./apps/frontend \
-ACT_API_DIR=./apps/act-api \
-ACT_ADK_WORKER_DIR=./apps/act-adk-worker \
-ORGANIZE_DIR=./apps/organize \
+ACT_API_DIR=/path/to/act-api \
+ACT_ADK_WORKER_DIR=/path/to/act-adk-worker \
+docker compose --profile ui up
+```
+
+`full` profile で path を全部明示したい場合は次の形です。
+
+```bash
+FRONTEND_DIR=./ActionAct/frontend \
+ACT_API_DIR=/path/to/act-api \
+ACT_ADK_WORKER_DIR=/path/to/act-adk-worker \
+ORGANIZE_DIR=./ActionOrganize \
 docker compose --profile full up
 ```
 
-ソースが未配置のサービスは、コンテナ内で待機メッセージを出して停止せず待つようにしています。
+ソースが未配置のサービスは、コンテナ内で待機メッセージを出して停止せず待機します。
 
 ### 主な環境変数
 
@@ -76,6 +93,7 @@ docker compose --profile full up
 NEXT_PUBLIC_USE_MOCKS=false \
 VERTEX_USE_REAL_API=false \
 GOOGLE_CLOUD_PROJECT=local-dev \
+STATE_BACKEND=memory \
 docker compose --profile full up
 ```
 
@@ -84,3 +102,4 @@ docker compose --profile full up
 * `frontend` の `NEXT_PUBLIC_*` はブラウザから参照するため、既定では `localhost` 向けにしています
 * `full` profile では [docker/pubsub/init.sh](/home/unix/Action/docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
 * Firebase の最小設定は [docker/firebase/firebase.json](/home/unix/Action/docker/firebase/firebase.json) にあります
+* この環境では Firebase emulator が Java を要求するため、`organize` 単体開発時は `STATE_BACKEND=memory` を使う方が安全です
