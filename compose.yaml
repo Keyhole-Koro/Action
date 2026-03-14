@@ -61,7 +61,7 @@ services:
       SID_REQ_TTL_SECONDS: "900"
       SID_LOCK_TTL_SECONDS: "10"
     command: >-
-      bash -lc '
+      bash -c '
       set -eu;
       if [ -f go.mod ]; then
         go run ./cmd/act-api;
