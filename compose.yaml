@@ -42,6 +42,8 @@ services:
     working_dir: /workspace
     volumes:
       - ${ACT_API_DIR:-./ActionAct/act-api}:/workspace
+      - act-api-go-mod-cache:/go/pkg/mod
+      - act-api-go-build-cache:/root/.cache/go-build
     environment:
       PORT: "8080"
       REDIS_ADDR: redis:6379
@@ -121,6 +123,7 @@ services:
       PUBSUB_PUBLISH_ENABLED: "true"
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      ORGANIZE_GCS_BUCKET: organize-local
       LEASE_TTL_SECONDS: "120"
       VERTEX_USE_REAL_API: "false"
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
@@ -256,6 +259,8 @@ networks:
 
 volumes:
   frontend-node-modules:
+  act-api-go-mod-cache:
+  act-api-go-build-cache:
   redis-data:
   firebase-emulator-data:
   gcs-emulator-data:
