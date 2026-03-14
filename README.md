@@ -65,24 +65,54 @@ docker compose --profile full up
 
 ### 主な環境変数
 
+`compose.yaml` では、ローカル起動用の値を各サービスに明示注入しています。
+ここで挙げる値は host 環境変数の fallback ではなく、compose に固定しているローカル既定値です。
+
+Frontend:
+
 * `NEXT_PUBLIC_USE_MOCKS`
-  * `ui` では既定値 `true`
-  * モックなしで繋ぐ場合は `false`
-* `VERTEX_USE_REAL_API`
-  * 既定値 `false`
-  * 実 Vertex API を使う場合は `true`
+  * compose 注入値 `true`
+  * `false` にすると実サービス接続前提になります
+* `NEXT_PUBLIC_RPC_BASE_URL`
+  * compose 注入値 `http://localhost:8080`
+  * Frontend から Connect RPC を呼ぶベース URL です
+* `NEXT_PUBLIC_ACT_API_BASE_URL`
+  * compose 注入値 `http://localhost:8080`
+  * Frontend から Act API HTTP を呼ぶベース URL です
+* `NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST`
+  * compose 注入値 `localhost:9099`
+* `NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST`
+  * compose 注入値 `localhost:8081`
+* `NEXT_PUBLIC_GCLOUD_PROJECT`
+  * compose 注入値 `local-dev`
+
+Act API:
+
 * `GOOGLE_CLOUD_PROJECT`
-  * 既定値 `local-dev`
+  * compose 注入値 `local-dev`
+* `SID_STRICT`
+  * compose 注入値 `true`
+* `SID_REQ_TTL_SECONDS`
+  * compose 注入値 `900`
+* `SID_LOCK_TTL_SECONDS`
+  * compose 注入値 `10`
 
-例:
+Organize / Act ADK Worker:
 
-```bash
-NEXT_PUBLIC_USE_MOCKS=false \
-VERTEX_USE_REAL_API=false \
-GOOGLE_CLOUD_PROJECT=local-dev \
-STATE_BACKEND=memory \
-docker compose --profile full up
-```
+* `VERTEX_USE_REAL_API`
+  * compose 注入値 `false`
+  * 実 Vertex API を使う場合は `true`
+* `STATE_BACKEND`
+  * `organize` のみ
+  * compose 注入値 `firestore`
+* `PUBSUB_TOPIC_NAME`
+  * `organize` のみ
+  * compose 注入値 `mind-events`
+* `PUBSUB_PUBLISH_ENABLED`
+  * `organize` のみ
+  * compose 注入値 `true`
+
+これらの値を変える場合は、`compose.yaml` を直接編集するか、override 用 compose file を追加してください。
 
 ### 補足
 
