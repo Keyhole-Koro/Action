@@ -7,7 +7,7 @@ services:
     init: true
     working_dir: /workspace
     volumes:
-      - ${FRONTEND_DIR:-./frontend}:/workspace
+      - ${FRONTEND_DIR:-./ActionAct/frontend}:/workspace
     environment:
       PORT: "3000"
       HOSTNAME: "0.0.0.0"
@@ -125,7 +125,7 @@ services:
     init: true
     working_dir: /workspace
     volumes:
-      - ${ORGANIZE_DIR:-./organize}:/workspace
+      - ${ORGANIZE_DIR:-./ActionOrganize}:/workspace
     environment:
       PORT: "8090"
       GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
