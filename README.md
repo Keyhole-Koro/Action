@@ -24,6 +24,7 @@
 
 ```bash
 make compose-check
+make compose-preflight
 make smoke-test
 docker compose --profile ui up
 docker compose --profile full up
@@ -73,6 +74,8 @@ make compose-check
 
 `make compose-check` は bind mount の解決先を確認します。ディレクトリ不在は error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
 
+`make compose-preflight` は `--profile full` の実効 compose 設定を検査し、`organize` が `VERTEX_USE_REAL_API=true` のときに `GEMINI_API_KEY` が空なら起動前に失敗させます。
+
 起動後の最小疎通確認は次を使います。
 
 ```bash
@@ -110,6 +113,13 @@ Organize / Act ADK Worker:
 * `VERTEX_USE_REAL_API`
   * compose 注入値 `false`
   * 実 Vertex API を使う場合は `true`
+* `GEMINI_MODEL`
+  * `organize` のみ
+  * compose 注入値 `gemini-3-flash`
+* `GEMINI_API_KEY`
+  * `organize` のみ
+  * `VERTEX_USE_REAL_API=true` のとき必須
+  * compose は host の `GEMINI_API_KEY` をそのまま渡す
 * `STATE_BACKEND`
   * `organize` のみ
   * compose 注入値 `firestore`
@@ -122,6 +132,24 @@ Organize / Act ADK Worker:
 
 これらの値を変える場合は、`compose.yaml` を直接編集するか、override 用 compose file を追加してください。
 Frontend の公開設定を変える場合は、`ActionAct/frontend/src/config/local.json` または `ActionAct/frontend/src/config/prod.json` を編集してください。
+
+Gemini 実 API を `organize` で使う最小例:
+
+```bash
+export GEMINI_API_KEY=your-api-key
+docker compose --profile full up organize
+```
+
+`VERTEX_USE_REAL_API=true` に切り替える場合は `compose.yaml` か override で明示してください。
+
+`compose.override.yaml` を使う場合は、次で `organize` を実 API モードで起動できます。
+
+```bash
+export GEMINI_API_KEY=your-api-key
+docker compose --profile full up organize
+```
+
+既定の override では `VERTEX_USE_REAL_API=true` と `GEMINI_MODEL=gemini-3-flash` を注入します。
 
 Optional override:
 

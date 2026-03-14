@@ -12,6 +12,10 @@ lint:
 compose-check:
 	bash ./scripts/compose-check.sh
 
+.PHONY: compose-preflight
+compose-preflight:
+	bash ./scripts/compose-preflight.sh
+
 .PHONY: smoke-test
 smoke-test:
 	bash ./scripts/smoke-test.sh
