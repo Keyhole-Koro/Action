@@ -186,7 +186,9 @@ services:
 
   firebase-emulator:
     profiles: ["full"]
-    image: node:22-bookworm
+    build:
+      context: .
+      dockerfile: ./docker/firebase/Dockerfile
     init: true
     working_dir: /workspace
     volumes:
@@ -243,7 +245,9 @@ services:
 
   pubsub-emulator:
     profiles: ["full"]
-    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:stable
+    build:
+      context: .
+      dockerfile: ./docker/pubsub/Dockerfile
     init: true
     command:
       [

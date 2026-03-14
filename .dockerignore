@@ -1,0 +1,15 @@
+.git
+.gitmodules
+
+ActionAct
+ActionOrganize
+act
+contracts
+gen
+tmp
+
+node_modules
+dist
+.next
+.turbo
+.pnpm-store

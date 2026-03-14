@@ -102,4 +102,5 @@ docker compose --profile full up
 * `frontend` の `NEXT_PUBLIC_*` はブラウザから参照するため、既定では `localhost` 向けにしています
 * `full` profile では [docker/pubsub/init.sh](/home/unix/Action/docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
 * Firebase の最小設定は [docker/firebase/firebase.json](/home/unix/Action/docker/firebase/firebase.json) にあります
-* この環境では Firebase emulator が Java を要求するため、`organize` 単体開発時は `STATE_BACKEND=memory` を使う方が安全です
+* `full` profile の emulator image には Java を同梱しているため、追加の Java セットアップなしで起動できます
+* `organize` 単体開発で emulator を使わない場合は、`STATE_BACKEND=memory` でも起動できます
