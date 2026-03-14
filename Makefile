@@ -7,3 +7,7 @@ generate:
 .PHONY: lint
 lint:
 	cd contracts && buf lint
+
+.PHONY: compose-check
+compose-check:
+	bash ./scripts/compose-check.sh

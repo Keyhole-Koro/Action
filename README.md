@@ -23,6 +23,7 @@
 ### 起動例
 
 ```bash
+make compose-check
 docker compose --profile ui up
 docker compose --profile full up
 ```
@@ -62,6 +63,14 @@ ACT_ADK_WORKER_DIR=/path/to/act-adk-worker \
 ORGANIZE_DIR=./ActionOrganize \
 docker compose --profile full up
 ```
+
+起動前に bind mount の解決先と compose 解釈を確認したい場合は次を使います。
+
+```bash
+make compose-check
+```
+
+`make compose-check` はディレクトリ不在を error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
 
 ### 主な環境変数
 
@@ -113,6 +122,12 @@ Organize / Act ADK Worker:
   * compose 注入値 `true`
 
 これらの値を変える場合は、`compose.yaml` を直接編集するか、override 用 compose file を追加してください。
+
+Optional override:
+
+* `GCS_EMULATOR_IMAGE`
+  * 既定値 `fsouza/fake-gcs-server:latest`
+  * `gcs-emulator` service の image を差し替える場合だけ使います
 
 ### 補足
 
