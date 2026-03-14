@@ -12,6 +12,10 @@ lint:
 compose-check:
 	bash ./scripts/compose-check.sh
 
+.PHONY: smoke-test
+smoke-test:
+	bash ./scripts/smoke-test.sh
+
 .PHONY: frontend-dev
 frontend-dev:
 	cd ActionAct/frontend && npm run dev

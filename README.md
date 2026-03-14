@@ -24,6 +24,7 @@
 
 ```bash
 make compose-check
+make smoke-test
 docker compose --profile ui up
 docker compose --profile full up
 ```
@@ -71,6 +72,14 @@ make compose-check
 ```
 
 `make compose-check` は bind mount の解決先を確認します。ディレクトリ不在は error にし、service 実装ファイル不足は compose と同様に wait mode へ入る想定として warning を出します。
+
+起動後の最小疎通確認は次を使います。
+
+```bash
+make smoke-test
+```
+
+`make smoke-test` は起動中の `frontend`, `act-api`, `act-adk-worker` に対して `/`, `/healthz`, `/auth/session/bootstrap` を確認します。`organize` や `firebase-emulator` が起動中なら、それらの health も追加で確認します。
 
 ### 主な環境変数
 
