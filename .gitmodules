@@ -1,0 +1,6 @@
+[submodule "ActionAct"]
+	path = ActionAct
+	url = https://github.com/Keyhole-Koro/ActionAct.git
+[submodule "ActionOrganize"]
+	path = ActionOrganize
+	url = https://github.com/Keyhole-Koro/ActionOrganize.git
