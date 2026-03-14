@@ -2,11 +2,11 @@ version: v1
 plugins:
   # Go (act-api) 向け protobuf メッセージ
   - plugin: buf.build/protocolbuffers/go
-    out: ../gen
+    out: ../ActionAct/act-api/gen
     opt: paths=source_relative
   # Go (act-api) 向け Connect RPC ハンドラ
   - plugin: buf.build/connectrpc/go
-    out: ../gen
+    out: ../ActionAct/act-api/gen
     opt: paths=source_relative
 
   # TypeScript (frontend) 向け protobuf メッセージ

@@ -4,12 +4,12 @@
 
 ローカル起動用の compose は [compose.yaml](/home/unix/Action/compose.yaml) にあります。
 
-この repo の現状では、compose でそのまま参照できる実装ディレクトリは次の 2 つです。
+この repo の現状では、compose でそのまま参照できる実装ディレクトリは次の 4 つです。
 
 * `frontend`: `./ActionAct/frontend`
+* `act-api`: `./ActionAct/act-api`
+* `act-adk-worker`: `./ActionAct/act-adk-worker`
 * `organize`: `./ActionOrganize`
-
-`act-api` と `act-adk-worker` はまだこの repo に実装が無いため、起動する場合は `ACT_API_DIR` / `ACT_ADK_WORKER_DIR` を明示的に上書きしてください。
 
 ### Profiles
 
@@ -49,22 +49,11 @@ compose の既定 bind mount は次のとおりです。
 * `ACT_ADK_WORKER_DIR=./ActionAct/act-adk-worker`
 * `ORGANIZE_DIR=./ActionOrganize`
 
-このうち、今の repo で実在する既定値は次の 2 つです。
+この repo では、上記 4 つの既定値がそのまま使えます。
 
-* `FRONTEND_DIR=./ActionAct/frontend`
-* `ORGANIZE_DIR=./ActionOrganize`
-
-`ui` profile を本当に動かすには `ACT_API_DIR` と `ACT_ADK_WORKER_DIR` を上書きする必要があります。
+別の checkout や外部ディレクトリを bind mount したい場合だけ、対応する `*_DIR` を上書きしてください。
 
 例:
-
-```bash
-ACT_API_DIR=/path/to/act-api \
-ACT_ADK_WORKER_DIR=/path/to/act-adk-worker \
-docker compose --profile ui up
-```
-
-`full` profile で path を全部明示したい場合は次の形です。
 
 ```bash
 FRONTEND_DIR=./ActionAct/frontend \
@@ -73,8 +62,6 @@ ACT_ADK_WORKER_DIR=/path/to/act-adk-worker \
 ORGANIZE_DIR=./ActionOrganize \
 docker compose --profile full up
 ```
-
-ソースが未配置のサービスは、コンテナ内で待機メッセージを出して停止せず待機します。
 
 ### 主な環境変数
 

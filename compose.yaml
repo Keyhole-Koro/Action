@@ -249,15 +249,13 @@ services:
       context: .
       dockerfile: ./docker/pubsub/Dockerfile
     init: true
+    environment:
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-local-dev}
     command:
       [
-        "gcloud",
-        "beta",
-        "emulators",
-        "pubsub",
-        "start",
-        "--project=local-dev",
-        "--host-port=0.0.0.0:8085",
+        "bash",
+        "-lc",
+        "set -eu; gcloud beta emulators pubsub start --project=\"$${GOOGLE_CLOUD_PROJECT}\" --host-port=0.0.0.0:8085",
       ]
     ports:
       - "8085:8085"
