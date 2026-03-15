@@ -60,6 +60,8 @@ services:
       CSRF_TTL_SECONDS: "86400"
       SID_REQ_TTL_SECONDS: "900"
       SID_LOCK_TTL_SECONDS: "10"
+      GCS_BUCKET: action-uploads-dev
+      PUBSUB_EMULATOR_HOST: firebase-emulator:8085
     command: >-
       bash -c ' set -eu; if [ -f go.mod ]; then
         go run ./cmd/act-api;
@@ -128,6 +130,8 @@ services:
       ORGANIZE_GCS_BUCKET: organize-local
       LEASE_TTL_SECONDS: "120"
       VERTEX_USE_REAL_API: "false"
+      GEMINI_MODEL: gemini-3-flash
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
     command: >-
       bash -lc ' set -eu; corepack enable; if [ -f pnpm-lock.yaml ]; then
