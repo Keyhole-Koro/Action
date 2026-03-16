@@ -61,9 +61,15 @@ create_topic() {
 
 create_push_subscription() {
   local subscription="$1"
+  local filter
+  filter="$(subscription_filter "${subscription}")"
+
   if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" GET)" = "200" ]; then
-    printf 'Subscription already exists: %s\n' "${subscription}"
-    return 0
+    if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" DELETE)" != "200" ]; then
+      printf 'Failed to delete subscription: %s\n' "${subscription}" >&2
+      exit 1
+    fi
+    printf 'Recreated subscription: %s\n' "${subscription}"
   fi
 
   if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" PUT "{
@@ -71,12 +77,53 @@ create_push_subscription() {
       \"pushConfig\": {
         \"pushEndpoint\": \"${ORGANIZE_PUSH_ENDPOINT}\"
       },
-      \"ackDeadlineSeconds\": 30
+      \"ackDeadlineSeconds\": 30,
+      \"filter\": ${filter}
     }")" != "200" ]; then
     printf 'Failed to create subscription: %s\n' "${subscription}" >&2
     exit 1
   fi
   printf 'Created subscription: %s\n' "${subscription}"
+}
+
+subscription_filter() {
+  local subscription="$1"
+  case "${subscription}" in
+    "sub-a0")
+      printf '%s' '"attributes.type = \"media.received\""'
+      ;;
+    "sub-a1")
+      printf '%s' '"attributes.type = \"input.received\" OR attributes.type = \"atom.reissued\""'
+      ;;
+    "sub-topic-resolver")
+      printf '%s' '"attributes.type = \"atom.created\""'
+      ;;
+    "sub-a2")
+      printf '%s' '"attributes.type = \"topic.resolved\""'
+      ;;
+    "sub-a3b")
+      printf '%s' '"attributes.type = \"draft.updated\" OR attributes.type = \"topic.schema_updated\""'
+      ;;
+    "sub-a6")
+      printf '%s' '"attributes.type = \"bundle.described\""'
+      ;;
+    "sub-a3")
+      printf '%s' '"attributes.type = \"bundle.created\""'
+      ;;
+    "sub-a4")
+      printf '%s' '"attributes.type = \"outline.updated\" OR attributes.type = \"topic.node_changed\""'
+      ;;
+    "sub-a7")
+      printf '%s' '"attributes.type = \"node.rollup_requested\" OR attributes.type = \"node.rollup.updated\""'
+      ;;
+    "sub-a5")
+      printf '%s' '"attributes.type = \"topic.metrics.updated\""'
+      ;;
+    *)
+      printf 'Unknown subscription: %s\n' "${subscription}" >&2
+      exit 1
+      ;;
+  esac
 }
 
 create_topic "${TOPIC}"

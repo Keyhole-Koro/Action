@@ -111,6 +111,16 @@ services:
     networks:
       - clarify-net
 
+  gcs-bootstrap:
+    profiles: [ "full" ]
+    image: busybox:1.36
+    init: true
+    restart: "no"
+    volumes:
+      - gcs-emulator-data:/data
+      - ./docker/gcs:/bootstrap:ro
+    command: [ "sh", "/bootstrap/init.sh" ]
+
   organize:
     profiles: [ "full" ]
     image: node:22-bookworm
@@ -131,7 +141,7 @@ services:
       LEASE_TTL_SECONDS: "120"
       VERTEX_USE_REAL_API: "false"
       GEMINI_MODEL: gemini-3-flash
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      GOOGLE_API_KEY:
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
     command: >-
       bash -lc ' set -eu; corepack enable; if [ -f pnpm-lock.yaml ]; then
@@ -154,7 +164,7 @@ services:
       firebase-emulator:
         condition: service_healthy
       gcs-emulator:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8090:8090"
     networks:
@@ -211,6 +221,9 @@ services:
       - "4443:4443"
     volumes:
       - gcs-emulator-data:/data
+    depends_on:
+      gcs-bootstrap:
+        condition: service_completed_successfully
     healthcheck:
       test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:4443/storage/v1/b >/dev/null 2>&1 || exit 1" ]
       interval: 10s
