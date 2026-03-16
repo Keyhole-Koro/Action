@@ -25,6 +25,13 @@ message RunActRequest {
   LLMConfig llm_config = 8;
   // 旧クライアント互換用。認証正本には使わない（deprecated）
   string uid = 9;
+  // インラインメディア（画像、ファイル等）
+  repeated MediaData user_media = 10;
+}
+
+message MediaData {
+  string mime_type = 1;
+  bytes data = 2;
 }
 
 enum ActType {

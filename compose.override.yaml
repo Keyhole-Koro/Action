@@ -1,6 +1,0 @@
-services:
-  organize:
-    environment:
-      VERTEX_USE_REAL_API: "true"
-      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3-flash}
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
