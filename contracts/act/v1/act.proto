@@ -71,6 +71,10 @@ message PatchOp {
   string op = 1;        // "upsert" or "append_md"
   string node_id = 2;
   string content = 3;
+  // request 内で単調増加する append シーケンス。
+  uint64 seq = 4;
+  // append 適用前の本文長。frontend 側の安全適用に使う。
+  uint32 expected_offset = 5;
 }
 
 message Terminal {
