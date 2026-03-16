@@ -61,7 +61,7 @@ services:
       SID_REQ_TTL_SECONDS: "900"
       SID_LOCK_TTL_SECONDS: "10"
       GCS_BUCKET: action-uploads-dev
-      PUBSUB_EMULATOR_HOST: firebase-emulator:8085
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
     command: >-
       bash -c ' set -eu; if [ -f go.mod ]; then
         go run ./cmd/act-api;
