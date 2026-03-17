@@ -27,6 +27,18 @@ message RunActRequest {
   string uid = 9;
   // インラインメディア（画像、ファイル等）
   repeated MediaData user_media = 10;
+  // frontend が送る選択ノードの内容スナップショット
+  repeated SelectedNodeContext selected_node_contexts = 11;
+}
+
+message SelectedNodeContext {
+  string node_id = 1;
+  string label = 2;
+  string kind = 3;
+  string context_summary = 4;
+  string content_md = 5;
+  string thought_md = 6;
+  string detail_html = 7;
 }
 
 message MediaData {
@@ -77,9 +89,20 @@ message PatchOp {
   uint32 expected_offset = 5;
 }
 
+message SourceRef {
+  string id = 1;
+  string kind = 2;
+  string label = 3;
+  string uri = 4;
+}
+
 message Terminal {
   bool done = 1;
   ErrorInfo error = 2;
+  repeated string used_context_node_ids = 3;
+  repeated SelectedNodeContext used_selected_node_contexts = 4;
+  repeated string used_tools = 5;
+  repeated SourceRef used_sources = 6;
 }
 
 message ErrorInfo {
