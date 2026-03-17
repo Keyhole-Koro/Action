@@ -93,6 +93,8 @@ services:
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       VERTEX_USE_REAL_API: "false"
+      GEMINI_MODEL_FAST: gemini-3-flash
+      GEMINI_MODEL_QUALITY: gemini-3-pro
     command: >-
       bash -lc ' set -eu; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
