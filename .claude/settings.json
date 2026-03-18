@@ -14,7 +14,11 @@
       "Bash(npx buf:*)",
       "Read(//home/unix/**)",
       "Bash(/home/unix/go/bin/buf generate:*)",
-      "Bash(go build:*)"
+      "Bash(go build:*)",
+      "Bash(node -e \"const d3 = require\\(''d3-force''\\); const s = d3.forceSimulation\\(\\); console.log\\(typeof s.velocityDecay\\);\")",
+      "Bash(node -e \"import\\(''d3-force''\\).then\\(d3 => { const s = d3.forceSimulation\\(\\); console.log\\(typeof s.velocityDecay\\); }\\)\")",
+      "Bash(node -e \"const d3 = require\\(''''./node_modules/d3-force/src/simulation.js''''\\); console.log\\(''''ok''''\\)\")",
+      "Bash(find /home/unix/Action/ActionAct/frontend -path */d3-force* -name *.js)"
     ]
   }
 }
