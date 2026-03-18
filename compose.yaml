@@ -95,8 +95,8 @@ services:
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       VERTEX_USE_REAL_API: "false"
-      GEMINI_MODEL_FAST: gemini-3-flash
-      GEMINI_MODEL_QUALITY: gemini-3-pro
+      GEMINI_MODEL_FAST: gemini-3-flash-preview
+      GEMINI_MODEL_QUALITY: gemini-3-pro-preview
     command: >-
       bash -lc ' set -eu; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
@@ -143,8 +143,8 @@ services:
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       ORGANIZE_GCS_BUCKET: organize-local
       LEASE_TTL_SECONDS: "120"
-      GEMINI_MODEL_FAST: gemini-3-flash
-      GEMINI_MODEL_QUALITY: gemini-3-pro
+      GEMINI_MODEL_FAST: gemini-3-flash-preview
+      GEMINI_MODEL_QUALITY: gemini-3-pro-preview
       GOOGLE_API_KEY:
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
     command: >-
