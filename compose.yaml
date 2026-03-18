@@ -92,6 +92,7 @@ services:
       GOOGLE_API_KEY:
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      GCS_DISCORD_BUCKET: discord-logs-dev
       VERTEX_USE_REAL_API: "false"
     command: >-
       bash -lc ' set -eu; apt-get update -qq 2>/dev/null; apt-get install -y --reinstall libssl3 2>/dev/null; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
@@ -261,19 +262,17 @@ services:
       DISCORD_GUILD_IDS: ${DISCORD_GUILD_IDS:-}
       GCS_BUCKET: discord-logs-dev
       GOOGLE_CLOUD_PROJECT: local-dev
-      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
-      PUBSUB_TOPIC_NAME: mind-events
-      PUBSUB_FLUSH_SUBSCRIPTION: sub-discord-bot
       WORKSPACE_ID: ${WORKSPACE_ID:-default}
-      FLUSH_POLL_INTERVAL: "5"
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_DISCORD_TOPIC: discord-message-received
     depends_on:
       pubsub-emulator:
         condition: service_healthy
-      gcs-emulator:
-        condition: service_healthy
       pubsub-bootstrap:
         condition: service_completed_successfully
+      gcs-emulator:
+        condition: service_healthy
     networks:
       - clarify-net
 

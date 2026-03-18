@@ -1,9 +1,12 @@
-﻿"""Discord Bot - writes each message directly to Firestore. No buffering, no flush."""
+"""Discord Bot — writes each message to GCS, then fires a Pub/Sub event."""
 from __future__ import annotations
+
 import logging
 import os
+
 import discord
-from message_store import save_message
+from gcs_store import save_to_gcs
+from pubsub_publisher import publish_discord_message
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -19,6 +22,8 @@ def _require(name: str) -> str:
 TOKEN = _require("DISCORD_BOT_TOKEN")
 GUILD_IDS = {int(g) for g in _require("DISCORD_GUILD_IDS").split(",") if g.strip()}
 PROJECT_ID = _require("GOOGLE_CLOUD_PROJECT")
+GCS_BUCKET = _require("GCS_BUCKET")
+PUBSUB_TOPIC = os.environ.get("PUBSUB_DISCORD_TOPIC", "discord-message-received")
 WORKSPACE_ID = os.environ.get("WORKSPACE_ID", "default")
 
 intents = discord.Intents.default()
@@ -39,16 +44,44 @@ async def on_message(message: discord.Message) -> None:
         return
     if not message.content.strip():
         return
+
+    channel = message.channel
+    channel_id = None
+    thread_id = None
+    if isinstance(channel, discord.Thread):
+        thread_id = str(channel.id)
+        if channel.parent:
+            channel_id = str(channel.parent.id)
+    else:
+        channel_id = str(channel.id)
+
     try:
-        save_message(message, WORKSPACE_ID, PROJECT_ID)
+        gcs_path = save_to_gcs(message, WORKSPACE_ID, GCS_BUCKET)
         log.info(
-            "stored message guild=%s channel=%s author=%s",
+            "stored guild=%s channel=%s author=%s gcs=%s",
             message.guild.name,
-            getattr(message.channel, "name", message.channel.id),
+            getattr(channel, "name", channel.id),
             message.author,
+            gcs_path,
         )
     except Exception:
-        log.exception("Failed to store message id=%s", message.id)
+        log.exception("Failed to store message id=%s to GCS", message.id)
+        return
+
+    try:
+        publish_discord_message(
+            workspace_id=WORKSPACE_ID,
+            project_id=PROJECT_ID,
+            topic_name=PUBSUB_TOPIC,
+            message_id=str(message.id),
+            channel_id=channel_id,
+            thread_id=thread_id,
+            guild_id=str(message.guild.id),
+            gcs_path=gcs_path,
+        )
+    except Exception:
+        log.exception("Failed to publish Pub/Sub event for message id=%s", message.id)
+        # Non-fatal: GCS write succeeded, Pub/Sub failure only delays knowledge graph update
 
 
 if __name__ == "__main__":
