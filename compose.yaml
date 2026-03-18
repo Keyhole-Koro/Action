@@ -255,7 +255,7 @@ services:
   discord-bot:
     profiles: [ "full" ]
     build:
-      context: ./discord-bot
+      context: ./ActionOrganize/discord-bot
     init: true
     environment:
       DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
