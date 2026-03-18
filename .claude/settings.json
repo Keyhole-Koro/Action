@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/unix/Action -type d -name *java* -o -name *Java*)",
+      "Bash(find /home/unix/Action/ActionAct -name *.java -type f)",
+      "Bash(find /home/unix/Action/ActionAct -type f \\\\\\(-name *.java -o -name *.kt \\\\\\))",
+      "Bash(find /home/unix/Action/ActionOrganize -type f \\\\\\(-name *.java -o -name *.kt \\\\\\))",
+      "Bash(find /home/unix/Action -type f \\\\\\(-name *.java -o -name *.kt \\\\\\))",
+      "Bash(grep -r \"uploadFile\\\\|UploadFile\\\\|upload\" /home/unix/Action/ActionAct/act-api/cmd --include=*.go)",
+      "Bash(grep -r \"\\\\.pdf\\\\|\\\\.docx\\\\|\\\\.doc\\\\|\\\\.pptx\\\\|convert\\\\|extract\" /home/unix/Action --include=*.go --include=*.ts --include=*.js)",
+      "Bash(grep -r \"media\\\\|document\\\\|process\" /home/unix/Action/ActionAct/act-api/internal --include=*.go)",
+      "Bash(find /home/unix/Action -name *convert* -o -name *extract* -o -name *interpreter*)",
+      "Bash(grep -r \"A0_MEDIA\\\\|media_interpreter\\\\|document.*text\" /home/unix/Action --include=*.ts --include=*.go -B 2 -A 2)",
+      "Bash(npx buf:*)",
+      "Read(//home/unix/**)",
+      "Bash(/home/unix/go/bin/buf generate:*)",
+      "Bash(go build:*)"
+    ]
+  }
+}
