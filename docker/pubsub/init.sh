@@ -32,6 +32,7 @@ if (defined $line && $line =~ m{^HTTP/\S+\s+(\d{3})}) {
 
 TOPIC="mind-events"
 DLQ_TOPIC="mind-events-dlq"
+DISCORD_FLUSH_TOPIC="discord-flush-requests"
 SUBSCRIPTIONS=(
   "sub-a0"
   "sub-a1"
@@ -44,6 +45,9 @@ SUBSCRIPTIONS=(
   "sub-a7"
   "sub-a5"
 )
+
+# discord-bot uses pull subscription on discord-flush-requests topic
+DISCORD_FLUSH_PULL_SUBSCRIPTION="sub-discord-bot"
 
 create_topic() {
   local topic="$1"
@@ -126,11 +130,36 @@ subscription_filter() {
   esac
 }
 
+create_pull_subscription() {
+  local topic="$1"
+  local subscription="$2"
+
+  if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" GET)" = "200" ]; then
+    if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" DELETE)" != "200" ]; then
+      printf 'Failed to delete subscription: %s\n' "${subscription}" >&2
+      exit 1
+    fi
+    printf 'Recreated pull subscription: %s\n' "${subscription}"
+  fi
+
+  if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" PUT "{
+      \"topic\": \"projects/${PUBSUB_PROJECT_ID}/topics/${topic}\",
+      \"ackDeadlineSeconds\": 30
+    }")" != "200" ]; then
+    printf 'Failed to create pull subscription: %s\n' "${subscription}" >&2
+    exit 1
+  fi
+  printf 'Created pull subscription: %s\n' "${subscription}"
+}
+
 create_topic "${TOPIC}"
 create_topic "${DLQ_TOPIC}"
 
 for subscription in "${SUBSCRIPTIONS[@]}"; do
   create_push_subscription "${subscription}"
 done
+
+create_topic "${DISCORD_FLUSH_TOPIC}"
+create_pull_subscription "${DISCORD_FLUSH_TOPIC}" "${DISCORD_FLUSH_PULL_SUBSCRIPTION}"
 
 printf 'Pub/Sub bootstrap finished for project %s\n' "${PUBSUB_PROJECT_ID}"

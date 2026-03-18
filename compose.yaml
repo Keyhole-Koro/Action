@@ -94,7 +94,7 @@ services:
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       VERTEX_USE_REAL_API: "false"
     command: >-
-      bash -lc ' set -eu; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
+      bash -lc ' set -eu; apt-get update -qq 2>/dev/null; apt-get install -y --reinstall libssl3 2>/dev/null; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
       elif [ -f pyproject.toml ]; then
         pip install --no-cache-dir -e .;
@@ -248,6 +248,32 @@ services:
       interval: 10s
       timeout: 5s
       retries: 12
+    networks:
+      - clarify-net
+
+  discord-bot:
+    profiles: [ "full" ]
+    build:
+      context: ./discord-bot
+    init: true
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      DISCORD_GUILD_IDS: ${DISCORD_GUILD_IDS:-}
+      GCS_BUCKET: discord-logs-dev
+      GOOGLE_CLOUD_PROJECT: local-dev
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_TOPIC_NAME: mind-events
+      PUBSUB_FLUSH_SUBSCRIPTION: sub-discord-bot
+      WORKSPACE_ID: ${WORKSPACE_ID:-default}
+      FLUSH_POLL_INTERVAL: "5"
+      STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+    depends_on:
+      pubsub-emulator:
+        condition: service_healthy
+      gcs-emulator:
+        condition: service_healthy
+      pubsub-bootstrap:
+        condition: service_completed_successfully
     networks:
       - clarify-net
 
