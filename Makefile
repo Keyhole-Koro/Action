@@ -14,6 +14,18 @@ generate:
 lint:
 	cd contracts && buf lint
 
+.PHONY: build-check
+build-check:
+	@echo "🔍 Checking frontend (TypeScript)..."
+	cd ActionAct/frontend && npm run typecheck
+	@echo "🔍 Checking act-api (Go)..."
+	cd ActionAct/act-api && go build ./...
+	@echo "🔍 Checking act-adk-worker (Python)..."
+	cd ActionAct/act-adk-worker && python3 -m compileall app/
+	@echo "🔍 Checking organize (TypeScript)..."
+	cd ActionOrganize && npm run typecheck
+	@echo "✅ All build checks passed!"
+
 .PHONY: compose-check
 compose-check:
 	bash ./scripts/compose-check.sh
