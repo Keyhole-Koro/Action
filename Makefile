@@ -50,6 +50,10 @@ frontend-dev:
 docker-build:
 	@echo "Building Docker images (IMAGE_TAG=$(IMAGE_TAG))..."
 	@if [ -z "$(IMAGE_TAG)" ]; then echo "ERROR: IMAGE_TAG is required. Usage: make docker-build IMAGE_TAG=v1.0.0"; exit 1; fi
+	@if [ -z "$${PROJECT_ID}" ]; then echo "ERROR: PROJECT_ID is required."; exit 1; fi
+	@if [ -z "$${FIREBASE_API_KEY}" ] || [ "$${FIREBASE_API_KEY}" = "replace-me" ]; then echo "ERROR: FIREBASE_API_KEY is required and must not be replace-me."; exit 1; fi
+	@if [ -z "$${FIREBASE_AUTH_DOMAIN}" ] || [ "$${FIREBASE_AUTH_DOMAIN}" = "replace-me.firebaseapp.com" ]; then echo "ERROR: FIREBASE_AUTH_DOMAIN is required and must not be replace-me.firebaseapp.com."; exit 1; fi
+	@if [ -z "$${FIREBASE_APP_ID}" ] || [ "$${FIREBASE_APP_ID}" = "replace-me" ]; then echo "ERROR: FIREBASE_APP_ID is required and must not be replace-me."; exit 1; fi
 	docker build \
 		--load \
 		--build-arg NEXT_PUBLIC_USE_MOCKS=false \

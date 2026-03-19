@@ -35,6 +35,29 @@ jobs:
         with:
           submodules: true
 
+      - name: Validate frontend Firebase config
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+        run: |
+          set -eu
+
+          if [ -z "${FIREBASE_API_KEY}" ] || [ "${FIREBASE_API_KEY}" = "replace-me" ]; then
+            echo "ERROR: FIREBASE_API_KEY secret is missing or invalid"
+            exit 1
+          fi
+
+          if [ -z "${FIREBASE_AUTH_DOMAIN}" ] || [ "${FIREBASE_AUTH_DOMAIN}" = "replace-me.firebaseapp.com" ]; then
+            echo "ERROR: FIREBASE_AUTH_DOMAIN secret is missing or invalid"
+            exit 1
+          fi
+
+          if [ -z "${FIREBASE_APP_ID}" ] || [ "${FIREBASE_APP_ID}" = "replace-me" ]; then
+            echo "ERROR: FIREBASE_APP_ID secret is missing or invalid"
+            exit 1
+          fi
+
       - name: Set image tag
         id: tag
         run: |
