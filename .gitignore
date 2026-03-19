@@ -18,3 +18,4 @@ build/
 docker/firebase/*debug.log
 
 tmp
+.env
