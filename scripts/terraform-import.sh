@@ -36,6 +36,7 @@ import_resource() {
             -var="firebase_api_key=${FIREBASE_API_KEY}" \
             -var="firebase_auth_domain=${FIREBASE_AUTH_DOMAIN}" \
             -var="firebase_app_id=${FIREBASE_APP_ID}" \
+            -var="action_ingest_workspace_id=${ACTION_INGEST_WORKSPACE_ID:-default}" \
             "$address" "$id" || echo "  -> ⚠️  Could not import $address"
     fi
 }
@@ -57,6 +58,12 @@ import_resource "module.infrastructure.module.act_api_sa.google_service_account.
 import_resource "module.infrastructure.module.act_adk_worker_sa.google_service_account.sa" \
     "projects/${PROJECT_ID}/serviceAccounts/act-adk-worker-sa@${PROJECT_ID}.iam.gserviceaccount.com"
 
+import_resource "module.infrastructure.module.organize_sa.google_service_account.sa" \
+    "projects/${PROJECT_ID}/serviceAccounts/organize-sa@${PROJECT_ID}.iam.gserviceaccount.com"
+
+import_resource "module.infrastructure.module.action_ingest_sa.google_service_account.sa" \
+    "projects/${PROJECT_ID}/serviceAccounts/action-ingest-sa@${PROJECT_ID}.iam.gserviceaccount.com"
+
 import_resource "module.infrastructure.module.pubsub_invoker_sa.google_service_account.sa" \
     "projects/${PROJECT_ID}/serviceAccounts/pubsub-invoker-sa@${PROJECT_ID}.iam.gserviceaccount.com"
 
@@ -75,6 +82,9 @@ import_resource "module.infrastructure.module.act_adk_worker_service.google_clou
 
 import_resource "module.infrastructure.module.organize_service.google_cloud_run_v2_service.service" \
     "projects/${PROJECT_ID}/locations/asia-northeast1/services/organize"
+
+import_resource "module.infrastructure.google_cloud_run_v2_job.action_ingest_job" \
+    "projects/${PROJECT_ID}/locations/asia-northeast1/jobs/action-ingest"
 
 # Data Stores
 import_resource "module.infrastructure.google_redis_instance.main" \
@@ -95,7 +105,7 @@ import_resource "module.infrastructure.google_pubsub_topic.mind_events_dlq" \
     "projects/${PROJECT_ID}/topics/mind-events-dlq"
 
 # Pub/Sub Subscriptions
-SUBS=("sub-a0" "sub-a1" "sub-topic-resolver" "sub-a2" "sub-a3b" "sub-a6" "sub-a3" "sub-a4" "sub-a7" "sub-a5")
+SUBS=("sub-ingest" "sub-a0" "sub-a1" "sub-topic-resolver" "sub-a2" "sub-a3b" "sub-a6" "sub-a3" "sub-a4" "sub-a7" "sub-a5")
 for sub in "${SUBS[@]}"; do
     import_resource "module.infrastructure.google_pubsub_subscription.organize_subs[\"$sub\"]" \
         "projects/${PROJECT_ID}/subscriptions/$sub"

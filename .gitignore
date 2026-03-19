@@ -18,6 +18,8 @@ build/
 docker/firebase/*debug.log
 
 tmp
+.tmp-action-ingest-remote/
+ActionIngest.local/
 
 .env
 

@@ -10,6 +10,7 @@
 * `act-api`: `./ActionAct/act-api`
 * `act-adk-worker`: `./ActionAct/act-adk-worker`
 * `organize`: `./ActionOrganize`
+* `action-ingest`: `./ActionIngest`
 
 ### Profiles
 
@@ -17,7 +18,7 @@
   * `frontend`, `act-api`, `act-adk-worker`, `redis` を起動します
   * Frontend から Act 実行系の疎通確認を行うための最小構成です
 * `full`
-  * `ui` に加えて `organize`, `firebase-emulator`, `gcs-emulator`, `pubsub-emulator`, `pubsub-bootstrap` を起動します
+  * `ui` に加えて `organize`, `action-ingest`, `firebase-emulator`, `gcs-emulator`, `pubsub-emulator`, `pubsub-bootstrap` を起動します
   * Organize と emulator 群を含めた全経路確認用です
 
 ### 起動例
@@ -51,6 +52,7 @@ compose の既定 bind mount は次のとおりです。
 * `ACT_API_DIR=./ActionAct/act-api`
 * `ACT_ADK_WORKER_DIR=./ActionAct/act-adk-worker`
 * `ORGANIZE_DIR=./ActionOrganize`
+* `action-ingest` は `./ActionIngest` を参照します
 
 この repo では、上記 4 つの既定値がそのまま使えます。
 
@@ -161,6 +163,7 @@ Optional override:
 
 * `frontend` の公開設定は JSON 正本で管理しています
 * `full` profile では [docker/pubsub/init.sh](/home/unix/Action/docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
+* `action-ingest` は `INGEST_INPUT_FILE` を与えたときだけ実行されます
 * Firebase の最小設定は [docker/firebase/firebase.json](/home/unix/Action/docker/firebase/firebase.json) にあります
 * `full` profile の emulator image には Java を同梱しているため、追加の Java セットアップなしで起動できます
 * `organize` 単体開発で emulator を使わない場合は、`STATE_BACKEND=memory` でも起動できます

@@ -24,6 +24,8 @@ build-check:
 	cd ActionAct/act-adk-worker && python3 -m compileall app/
 	@echo "🔍 Checking organize (TypeScript)..."
 	cd ActionOrganize && npm run typecheck
+	@echo "🔍 Checking action-ingest (TypeScript)..."
+	cd ActionIngest && npm run typecheck
 	@echo "✅ All build checks passed!"
 
 .PHONY: compose-check
@@ -41,6 +43,15 @@ smoke-test:
 .PHONY: frontend-dev
 frontend-dev:
 	cd ActionAct/frontend && npm run dev
+
+.PHONY: action-ingest-dev
+action-ingest-dev:
+	@if [ -z "$(INPUT)" ]; then echo "ERROR: INPUT is required. Usage: make action-ingest-dev INPUT=/path/to/export.json"; exit 1; fi
+	cd ActionIngest && npm run dev -- --input "$(INPUT)"
+
+.PHONY: action-ingest-build
+action-ingest-build:
+	cd ActionIngest && npm run build
 
 # ──────────────────────────────────┐
 #  Production Deployment (Local)    │
@@ -75,6 +86,10 @@ docker-build:
 		--load \
 		-t asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/organize:$(IMAGE_TAG) \
 		ActionOrganize
+	docker build \
+		--load \
+		-t asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/action-ingest:$(IMAGE_TAG) \
+		ActionIngest
 	@echo "Build complete."
 
 .PHONY: docker-push
@@ -85,6 +100,7 @@ docker-push:
 	docker push asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/act-api:$(IMAGE_TAG)
 	docker push asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/act-adk-worker:$(IMAGE_TAG)
 	docker push asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/organize:$(IMAGE_TAG)
+	docker push asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/action-ingest:$(IMAGE_TAG)
 	@echo "Push complete."
 
 .PHONY: terraform-plan
@@ -98,7 +114,8 @@ terraform-plan:
 			-var="image_tag=$(IMAGE_TAG)" \
 			-var="firebase_api_key=$${FIREBASE_API_KEY}" \
 			-var="firebase_auth_domain=$${FIREBASE_AUTH_DOMAIN}" \
-			-var="firebase_app_id=$${FIREBASE_APP_ID}"
+			-var="firebase_app_id=$${FIREBASE_APP_ID}" \
+			-var="action_ingest_workspace_id=$${ACTION_INGEST_WORKSPACE_ID:-default}"
 
 .PHONY: terraform-apply
 terraform-apply:
@@ -111,7 +128,8 @@ terraform-apply:
 			-var="image_tag=$(IMAGE_TAG)" \
 			-var="firebase_api_key=$${FIREBASE_API_KEY}" \
 			-var="firebase_auth_domain=$${FIREBASE_AUTH_DOMAIN}" \
-			-var="firebase_app_id=$${FIREBASE_APP_ID}"
+			-var="firebase_app_id=$${FIREBASE_APP_ID}" \
+			-var="action_ingest_workspace_id=$${ACTION_INGEST_WORKSPACE_ID:-default}"
 
 .PHONY: terraform-import-all
 terraform-import-all:

@@ -134,6 +134,19 @@ jobs:
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/organize:${{ steps.tag.outputs.tag }}
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/organize:latest
 
+      # ── action-ingest ───────────────────────────────────
+      - name: Build action-ingest
+        run: |
+          docker build \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/action-ingest:${{ steps.tag.outputs.tag }} \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/action-ingest:latest \
+            ActionIngest
+
+      - name: Push action-ingest
+        run: |
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/action-ingest:${{ steps.tag.outputs.tag }}
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/action-ingest:latest
+
   deploy:
     name: Deploy to Cloud Run
     runs-on: ubuntu-latest

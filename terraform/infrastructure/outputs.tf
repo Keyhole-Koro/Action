@@ -20,6 +20,11 @@ output "organize_url" {
   value       = module.organize_service.uri
 }
 
+output "action_ingest_job_name" {
+  description = "action-ingest Cloud Run Job name"
+  value       = google_cloud_run_v2_job.action_ingest_job.name
+}
+
 output "redis_host" {
   description = "Memorystore Redis host"
   value       = google_redis_instance.main.host
@@ -43,10 +48,11 @@ output "github_deployer_sa" {
 output "service_accounts" {
   description = "Service account emails"
   value = {
-    frontend        = module.frontend_sa.email
-    act_api         = module.act_api_sa.email
-    act_adk_worker  = module.act_adk_worker_sa.email
-    organize        = module.organize_sa.email
-    pubsub_invoker  = module.pubsub_invoker_sa.email
+    frontend       = module.frontend_sa.email
+    act_api        = module.act_api_sa.email
+    act_adk_worker = module.act_adk_worker_sa.email
+    organize       = module.organize_sa.email
+    action_ingest  = module.action_ingest_sa.email
+    pubsub_invoker = module.pubsub_invoker_sa.email
   }
 }

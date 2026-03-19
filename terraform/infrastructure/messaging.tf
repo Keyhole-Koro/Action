@@ -25,6 +25,9 @@ resource "google_pubsub_topic" "mind_events_dlq" {
 
 locals {
   subscriptions = {
+    "sub-ingest" = {
+      filter = "attributes.type = \"organize.ingest.received\""
+    }
     "sub-a0" = {
       filter = "attributes.type = \"media.received\""
     }

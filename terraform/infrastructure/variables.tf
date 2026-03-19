@@ -82,3 +82,9 @@ variable "firebase_app_id" {
   type        = string
   description = "Firebase App ID"
 }
+
+variable "action_ingest_workspace_id" {
+  type        = string
+  default     = "default"
+  description = "Workspace ID used by ActionIngest when publishing organize.ingest.received jobs"
+}

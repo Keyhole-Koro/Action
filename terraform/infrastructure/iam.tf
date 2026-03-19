@@ -34,6 +34,13 @@ module "organize_sa" {
   display_name = "organize Cloud Run SA"
 }
 
+module "action_ingest_sa" {
+  source       = "../modules/iam_service_account"
+  project_id   = var.project_id
+  account_id   = "action-ingest-sa"
+  display_name = "action-ingest Cloud Run Job SA"
+}
+
 module "pubsub_invoker_sa" {
   source       = "../modules/iam_service_account"
   project_id   = var.project_id
@@ -132,6 +139,18 @@ resource "google_project_iam_member" "organize_aiplatform" {
   member  = "serviceAccount:${module.organize_sa.email}"
 }
 
+resource "google_project_iam_member" "action_ingest_storage_viewer" {
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${module.action_ingest_sa.email}"
+}
+
+resource "google_project_iam_member" "action_ingest_pubsub_publisher" {
+  project = var.project_id
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${module.action_ingest_sa.email}"
+}
+
 # ──────────────────────────────────────────────
 # Workload Identity Federation: GitHub Actions
 # ──────────────────────────────────────────────
@@ -215,6 +234,12 @@ resource "google_service_account_iam_member" "deployer_impersonate_act_adk_worke
 
 resource "google_service_account_iam_member" "deployer_impersonate_organize" {
   service_account_id = module.organize_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
+resource "google_service_account_iam_member" "deployer_impersonate_action_ingest" {
+  service_account_id = module.action_ingest_sa.name
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:${google_service_account.github_deployer.email}"
 }

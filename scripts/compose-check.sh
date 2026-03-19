@@ -8,6 +8,7 @@ frontend_dir="${FRONTEND_DIR:-./ActionAct/frontend}"
 act_api_dir="${ACT_API_DIR:-./ActionAct/act-api}"
 act_adk_worker_dir="${ACT_ADK_WORKER_DIR:-./ActionAct/act-adk-worker}"
 organize_dir="${ORGANIZE_DIR:-./ActionOrganize}"
+action_ingest_dir="${ACTION_INGEST_DIR:-./ActionIngest}"
 gcs_emulator_image="${GCS_EMULATOR_IMAGE:-fsouza/fake-gcs-server:latest}"
 
 resolve_path() {
@@ -44,6 +45,7 @@ check_dir "FRONTEND_DIR" "$frontend_dir" "package.json"
 check_dir "ACT_API_DIR" "$act_api_dir" "go.mod"
 check_dir "ACT_ADK_WORKER_DIR" "$act_adk_worker_dir" "app/main.py"
 check_dir "ORGANIZE_DIR" "$organize_dir" "package.json"
+check_dir "ACTION_INGEST_DIR" "$action_ingest_dir" "package.json"
 printf 'GCS_EMULATOR_IMAGE: %s\n' "$gcs_emulator_image"
 
 (cd "$ROOT_DIR" && docker compose config >/dev/null)

@@ -167,6 +167,8 @@ services:
         sleep infinity;
       fi'
     depends_on:
+      redis:
+        condition: service_healthy
       pubsub-emulator:
         condition: service_healthy
       firebase-emulator:
@@ -175,6 +177,40 @@ services:
         condition: service_healthy
     ports:
       - "8090:8090"
+    networks:
+      - clarify-net
+
+  action-ingest:
+    profiles: [ "full" ]
+    image: node:22-bookworm
+    init: true
+    working_dir: /workspace
+    volumes:
+      - ./ActionIngest:/workspace
+      - ./:/repo
+    environment:
+      INGEST_WORKSPACE_ID: local-dev
+      GOOGLE_CLOUD_PROJECT: local-dev
+      PUBSUB_TOPIC_NAME: mind-events
+      PUBSUB_MODE: emulator
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      INGEST_TARGET_CHUNK_TOKENS: "6000"
+      INGEST_RESERVED_OUTPUT_TOKENS: "512"
+      INGEST_PRIORITY: normal
+      INGEST_TOPIC_PREFIX: topic:ingest
+      INGEST_INPUT_FILE:
+    command: >-
+      bash -lc ' set -eu; npm ci || npm install;
+        if [ -z "$${INGEST_INPUT_FILE}" ]; then
+          echo "Set INGEST_INPUT_FILE to run ActionIngest. Container will stay idle.";
+          sleep infinity;
+        fi;
+        npm run dev -- --input "$${INGEST_INPUT_FILE}" '
+    depends_on:
+      pubsub-emulator:
+        condition: service_healthy
+      organize:
+        condition: service_started
     networks:
       - clarify-net
 

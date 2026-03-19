@@ -13,18 +13,18 @@ locals {
 module "frontend_service" {
   source = "../modules/cloud_run_service"
 
-  project_id                = var.project_id
-  region                    = var.region
-  service_name              = "frontend"
-  image_uri                 = "${local.image_base}/frontend:${var.image_tag}"
-  service_account_email     = module.frontend_sa.email
-  container_port            = 3000
-  cpu_limit                 = "1"
-  memory_limit              = "512Mi"
-  startup_cpu_boost         = true
-  allow_public              = true
-  min_instances             = 0
-  max_instances             = 3
+  project_id            = var.project_id
+  region                = var.region
+  service_name          = "frontend"
+  image_uri             = "${local.image_base}/frontend:${var.image_tag}"
+  service_account_email = module.frontend_sa.email
+  container_port        = 3000
+  cpu_limit             = "1"
+  memory_limit          = "512Mi"
+  startup_cpu_boost     = true
+  allow_public          = true
+  min_instances         = 0
+  max_instances         = 3
 
   environment_variables = {
     NEXT_PUBLIC_USE_MOCKS            = "false"
@@ -46,20 +46,20 @@ module "frontend_service" {
 module "act_api_service" {
   source = "../modules/cloud_run_service"
 
-  project_id                = var.project_id
-  region                    = var.region
-  service_name              = "act-api"
-  image_uri                 = "${local.image_base}/act-api:${var.image_tag}"
-  service_account_email     = module.act_api_sa.email
-  container_port            = 8080
-  cpu_limit                 = "2"
-  memory_limit              = "1Gi"
-  startup_cpu_boost         = true
-  allow_public              = false
-  min_instances             = 1
-  max_instances             = 5
-  vpc_connector_id          = google_vpc_access_connector.redis_connector.id
-  ingress                   = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  project_id            = var.project_id
+  region                = var.region
+  service_name          = "act-api"
+  image_uri             = "${local.image_base}/act-api:${var.image_tag}"
+  service_account_email = module.act_api_sa.email
+  container_port        = 8080
+  cpu_limit             = "2"
+  memory_limit          = "1Gi"
+  startup_cpu_boost     = true
+  allow_public          = false
+  min_instances         = 1
+  max_instances         = 5
+  vpc_connector_id      = google_vpc_access_connector.redis_connector.id
+  ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   environment_variables = {
     REDIS_ADDR               = "${google_redis_instance.main.host}:6379"
@@ -88,20 +88,20 @@ module "act_api_service" {
 module "act_adk_worker_service" {
   source = "../modules/cloud_run_service"
 
-  project_id                = var.project_id
-  region                    = var.region
-  service_name              = "act-adk-worker"
-  image_uri                 = "${local.image_base}/act-adk-worker:${var.image_tag}"
-  service_account_email     = module.act_adk_worker_sa.email
-  container_port            = 8080
-  cpu_limit                 = "4"
-  memory_limit              = "2Gi"
-  startup_cpu_boost         = true
-  allow_public              = false
-  min_instances             = 1
-  max_instances             = 10
-  vpc_connector_id          = google_vpc_access_connector.redis_connector.id
-  ingress                   = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  project_id            = var.project_id
+  region                = var.region
+  service_name          = "act-adk-worker"
+  image_uri             = "${local.image_base}/act-adk-worker:${var.image_tag}"
+  service_account_email = module.act_adk_worker_sa.email
+  container_port        = 8080
+  cpu_limit             = "4"
+  memory_limit          = "2Gi"
+  startup_cpu_boost     = true
+  allow_public          = false
+  min_instances         = 1
+  max_instances         = 10
+  vpc_connector_id      = google_vpc_access_connector.redis_connector.id
+  ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   environment_variables = {
     REDIS_ADDR           = "${google_redis_instance.main.host}:6379"
@@ -122,39 +122,105 @@ module "act_adk_worker_service" {
 module "organize_service" {
   source = "../modules/cloud_run_service"
 
-  project_id                = var.project_id
-  region                    = var.region
-  service_name              = "organize"
-  image_uri                 = "${local.image_base}/organize:${var.image_tag}"
-  service_account_email     = module.organize_sa.email
-  container_port            = 8090
-  cpu_limit                 = "4"
-  memory_limit              = "2Gi"
-  startup_cpu_boost         = true
-  allow_public              = false
-  min_instances             = 1
-  max_instances             = 5
-  vpc_connector_id          = google_vpc_access_connector.redis_connector.id
-  ingress                   = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  project_id            = var.project_id
+  region                = var.region
+  service_name          = "organize"
+  image_uri             = "${local.image_base}/organize:${var.image_tag}"
+  service_account_email = module.organize_sa.email
+  container_port        = 8090
+  cpu_limit             = "4"
+  memory_limit          = "2Gi"
+  startup_cpu_boost     = true
+  allow_public          = false
+  min_instances         = 1
+  max_instances         = 5
+  vpc_connector_id      = google_vpc_access_connector.redis_connector.id
+  ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 
   environment_variables = {
-    NODE_ENV               = "production"
-    STATE_BACKEND          = "firestore"
-    GOOGLE_CLOUD_PROJECT   = var.project_id
-    PUBSUB_TOPIC_NAME      = google_pubsub_topic.mind_events.name
-    PUBSUB_PUBLISH_ENABLED = "true"
-    ORGANIZE_GCS_BUCKET    = google_storage_bucket.uploads.name
-    LEASE_TTL_SECONDS      = "301"
-    GOOGLE_API_KEY         = var.firebase_api_key
-    GEMINI_MODEL_FAST      = var.gemini_model_fast
-    GEMINI_MODEL_QUALITY   = var.gemini_model_quality
-    REDIS_HOST             = google_redis_instance.main.host
-    REDIS_ADDR             = "${google_redis_instance.main.host}:6379"
-    LLM_LIMITER_REDIS_URL  = "redis://${google_redis_instance.main.host}:6379"
-    LLM_LIMITER_TARGET_TPM = "1200000"
-    LLM_LIMITER_TARGET_RPM = "10000"
+    NODE_ENV                    = "production"
+    STATE_BACKEND               = "firestore"
+    GOOGLE_CLOUD_PROJECT        = var.project_id
+    PUBSUB_TOPIC_NAME           = google_pubsub_topic.mind_events.name
+    PUBSUB_PUBLISH_ENABLED      = "true"
+    ORGANIZE_GCS_BUCKET         = google_storage_bucket.uploads.name
+    LEASE_TTL_SECONDS           = "301"
+    GOOGLE_API_KEY              = var.firebase_api_key
+    GEMINI_MODEL_FAST           = var.gemini_model_fast
+    GEMINI_MODEL_QUALITY        = var.gemini_model_quality
+    REDIS_HOST                  = google_redis_instance.main.host
+    REDIS_ADDR                  = "${google_redis_instance.main.host}:6379"
+    LLM_LIMITER_REDIS_URL       = "redis://${google_redis_instance.main.host}:6379"
+    LLM_LIMITER_TARGET_TPM      = "1200000"
+    LLM_LIMITER_TARGET_RPM      = "10000"
     LLM_LIMITER_MAX_CONCURRENCY = "50"
   }
+
+  depends_on = [module.api_enablement.api_services]
+}
+
+# ──────────────────────────────────────────────
+# action-ingest job
+# ──────────────────────────────────────────────
+
+resource "google_cloud_run_v2_job" "action_ingest_job" {
+  name     = "action-ingest"
+  location = var.region
+  project  = var.project_id
+
+  template {
+    template {
+      service_account = module.action_ingest_sa.email
+      timeout         = "3600s"
+      max_retries     = 1
+
+      containers {
+        image = "${local.image_base}/action-ingest:${var.image_tag}"
+
+        env {
+          name  = "INGEST_WORKSPACE_ID"
+          value = var.action_ingest_workspace_id
+        }
+
+        env {
+          name  = "GOOGLE_CLOUD_PROJECT"
+          value = var.project_id
+        }
+
+        env {
+          name  = "PUBSUB_TOPIC_NAME"
+          value = google_pubsub_topic.mind_events.name
+        }
+
+        env {
+          name  = "PUBSUB_MODE"
+          value = "gcp"
+        }
+
+        env {
+          name  = "INGEST_TARGET_CHUNK_TOKENS"
+          value = "6000"
+        }
+
+        env {
+          name  = "INGEST_RESERVED_OUTPUT_TOKENS"
+          value = "512"
+        }
+
+        env {
+          name  = "INGEST_PRIORITY"
+          value = "normal"
+        }
+
+        env {
+          name  = "INGEST_TOPIC_PREFIX"
+          value = "topic:ingest"
+        }
+      }
+    }
+  }
+
+  deletion_protection = false
 
   depends_on = [module.api_enablement.api_services]
 }

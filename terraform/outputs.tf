@@ -22,6 +22,11 @@ output "organize_url" {
   value       = module.infrastructure.organize_url
 }
 
+output "action_ingest_job_name" {
+  description = "action-ingest Cloud Run Job name"
+  value       = module.infrastructure.action_ingest_job_name
+}
+
 output "redis_host" {
   description = "Memorystore Redis host"
   value       = module.infrastructure.redis_host
