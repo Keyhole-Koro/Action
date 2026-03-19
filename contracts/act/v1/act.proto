@@ -60,12 +60,13 @@ message LLMConfig {
 }
 
 // RunActEvent はサーバーストリームのレスポンス。
-// text_delta or patch_ops or terminal のいずれかを持つ。
+// text_delta or patch_ops or terminal or action_trigger のいずれかを持つ。
 message RunActEvent {
   oneof event {
     TextDelta text_delta = 1;
     PatchOps patch_ops = 2;
     Terminal terminal = 3;
+    ActionTrigger action_trigger = 5;
   }
   // true のとき thought（思考ストリーム）。false のとき通常回答。
   bool is_thought = 4;
@@ -87,6 +88,20 @@ message PatchOp {
   uint64 seq = 4;
   // append 適用前の本文長。frontend 側の安全適用に使う。
   uint32 expected_offset = 5;
+  // ノードの種別。upsert 時に使用（例: "act", "suggestion"）。
+  string kind = 6;
+  // 親ノード ID。子ノード生成時に使用。
+  string parent_id = 7;
+  // ノードのラベル。upsert 時に使用。
+  string label = 8;
+}
+
+// LLM がフロントへ送るアクション命令。
+message ActionTrigger {
+  // アクション種別: "start_act"
+  string action = 1;
+  // アクション引数（JSON シリアライズ済み）
+  string payload_json = 2;
 }
 
 message SourceRef {

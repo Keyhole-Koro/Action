@@ -74,6 +74,8 @@ services:
         condition: service_healthy
       act-adk-worker:
         condition: service_started
+      pubsub-bootstrap:
+        condition: service_completed_successfully
     ports:
       - "8080:8080"
     networks:
@@ -94,6 +96,8 @@ services:
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       GCS_DISCORD_BUCKET: discord-logs-dev
       VERTEX_USE_REAL_API: "false"
+      GEMINI_MODEL_FAST: gemini-3-flash-preview
+      GEMINI_MODEL_QUALITY: gemini-3-pro-preview
     command: >-
       bash -lc ' set -eu; apt-get update -qq 2>/dev/null; apt-get install -y --reinstall libssl3 2>/dev/null; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
@@ -138,11 +142,11 @@ services:
       PUBSUB_PUBLISH_ENABLED: "true"
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
-      ORGANIZE_GCS_BUCKET: organize-local
+      ORGANIZE_GCS_BUCKET: action-uploads-dev
       LEASE_TTL_SECONDS: "120"
-      GEMINI_MODEL_FAST: gemini-3-flash
-      GEMINI_MODEL_QUALITY: gemini-3-pro
-      GOOGLE_API_KEY:
+      GEMINI_MODEL_FAST: gemini-3-flash-preview
+      GEMINI_MODEL_QUALITY: gemini-3-pro-preview
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
     command: >-
       bash -lc ' set -eu; corepack enable; if [ -f pnpm-lock.yaml ]; then
