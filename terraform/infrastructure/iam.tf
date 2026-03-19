@@ -187,6 +187,13 @@ resource "google_project_iam_member" "deployer_run_developer" {
   member  = "serviceAccount:${google_service_account.github_deployer.email}"
 }
 
+# 状態保存バケットへのアクセス権限 (tfstate の読み書きに必要)
+resource "google_storage_bucket_iam_member" "deployer_state_bucket_admin" {
+  bucket = "action-490203-tfstate"
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
 # Deployer can impersonate application SAs
 resource "google_service_account_iam_member" "deployer_impersonate_frontend" {
   service_account_id = module.frontend_sa.name
