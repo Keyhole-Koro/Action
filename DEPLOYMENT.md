@@ -167,6 +167,10 @@ gcloud auth configure-docker ${REGION}-docker.pkg.dev
 # frontend をビルド・プッシュ
 docker build \
   --build-arg NEXT_PUBLIC_USE_MOCKS=false \
+  --build-arg NEXT_PUBLIC_FIREBASE_API_KEY="${FIREBASE_API_KEY}" \
+  --build-arg NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="${FIREBASE_AUTH_DOMAIN}" \
+  --build-arg NEXT_PUBLIC_FIREBASE_APP_ID="${FIREBASE_APP_ID}" \
+  --build-arg NEXT_PUBLIC_GCLOUD_PROJECT="${PROJECT_ID}" \
   -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/action/frontend:${IMAGE_TAG} \
   -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/action/frontend:latest \
   ActionAct/frontend

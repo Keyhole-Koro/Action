@@ -53,6 +53,10 @@ docker-build:
 	docker build \
 		--load \
 		--build-arg NEXT_PUBLIC_USE_MOCKS=false \
+		--build-arg NEXT_PUBLIC_FIREBASE_API_KEY="$${FIREBASE_API_KEY}" \
+		--build-arg NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="$${FIREBASE_AUTH_DOMAIN}" \
+		--build-arg NEXT_PUBLIC_FIREBASE_APP_ID="$${FIREBASE_APP_ID}" \
+		--build-arg NEXT_PUBLIC_GCLOUD_PROJECT="$${PROJECT_ID}" \
 		-t asia-northeast1-docker.pkg.dev/$${PROJECT_ID}/action/frontend:$(IMAGE_TAG) \
 		ActionAct/frontend
 	docker build \
