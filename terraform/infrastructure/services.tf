@@ -127,7 +127,7 @@ module "organize_service" {
   service_name              = "organize"
   image_uri                 = "${local.image_base}/organize:${var.image_tag}"
   service_account_email     = module.organize_sa.email
-  container_port            = 8080
+  container_port            = 8090
   cpu_limit                 = "4"
   memory_limit              = "2Gi"
   startup_cpu_boost         = true
@@ -150,6 +150,10 @@ module "organize_service" {
     GEMINI_MODEL_QUALITY   = var.gemini_model_quality
     REDIS_HOST             = google_redis_instance.main.host
     REDIS_ADDR             = "${google_redis_instance.main.host}:6379"
+    LLM_LIMITER_REDIS_URL  = "redis://${google_redis_instance.main.host}:6379"
+    LLM_LIMITER_TARGET_TPM = "1200000"
+    LLM_LIMITER_TARGET_RPM = "10000"
+    LLM_LIMITER_MAX_CONCURRENCY = "50"
   }
 
   depends_on = [module.api_enablement.api_services]
