@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isMember(workspaceId) {
+      return exists(/databases/$(database)/documents/workspaces/$(workspaceId)/members/$(request.auth.uid));
+    }
+
+    match /workspaces/{workspaceId} {
+      // public workspace は誰でも読める、private は自分がメンバーの場合のみ
+      allow read: if isAuthenticated() &&
+        (resource.data.visibility == 'public' || isMember(workspaceId));
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && isMember(workspaceId);
+
+      match /members/{memberId} {
+        // 自分のメンバードキュメントは本人が読める（collectionGroup クエリ用）
+        // ワークスペースメンバーも読める
+        allow read: if isAuthenticated() &&
+          (request.auth.uid == memberId || isMember(workspaceId));
+        allow write: if isAuthenticated() && isMember(workspaceId);
+      }
+
+      match /{subcollection=**} {
+        allow read: if isAuthenticated() &&
+          (isMember(workspaceId) ||
+           get(/databases/$(database)/documents/workspaces/$(workspaceId)).data.visibility == 'public');
+        allow write: if isAuthenticated() && isMember(workspaceId);
+      }
+    }
+  }
+}

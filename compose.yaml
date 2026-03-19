@@ -46,6 +46,7 @@ services:
       - act-api-go-build-cache:/root/.cache/go-build
     environment:
       PORT: "8080"
+      CORS_ALLOWED_ORIGINS: "http://localhost:3000"
       REDIS_ADDR: redis:6379
       REDIS_HOST: redis
       REDIS_PORT: "6379"
@@ -61,6 +62,9 @@ services:
       SID_REQ_TTL_SECONDS: "900"
       SID_LOCK_TTL_SECONDS: "10"
       GCS_BUCKET: action-uploads-dev
+      # In local dev, presign returns a proxy URL through act-api itself so
+      # the browser doesn't need direct CORS access to the GCS emulator.
+      UPLOAD_PROXY_ORIGIN: http://localhost:8080
       PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
     command: >-
       bash -c ' set -eu; if [ -f go.mod ]; then

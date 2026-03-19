@@ -20,3 +20,22 @@ docker/firebase/*debug.log
 tmp
 
 .env
+
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.tfvars
+*.tfvars.json
+*.tfplan
+plan.out
+
+# Exception: allow .example files for templates
+!**/tfvars/*.tfvars.example

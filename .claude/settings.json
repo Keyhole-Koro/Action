@@ -18,7 +18,25 @@
       "Bash(node -e \"const d3 = require\\(''d3-force''\\); const s = d3.forceSimulation\\(\\); console.log\\(typeof s.velocityDecay\\);\")",
       "Bash(node -e \"import\\(''d3-force''\\).then\\(d3 => { const s = d3.forceSimulation\\(\\); console.log\\(typeof s.velocityDecay\\); }\\)\")",
       "Bash(node -e \"const d3 = require\\(''''./node_modules/d3-force/src/simulation.js''''\\); console.log\\(''''ok''''\\)\")",
-      "Bash(find /home/unix/Action/ActionAct/frontend -path */d3-force* -name *.js)"
+      "Bash(find /home/unix/Action/ActionAct/frontend -path */d3-force* -name *.js)",
+      "Bash(find /home/unix/Action/ActionOrganize/src -name \"*.ts\" -exec grep -l \"topics.*nodes\\\\|nodes.*parentId\\\\|mapMd\" {})",
+      "Bash(find /home/unix/Action -name *.rules -o -name *firestore*rules*)",
+      "Bash(find /home/unix/Action -type f \\\\\\(-name *function* -o -name *trigger* -o -name *sync* \\\\\\) -not -path *node_modules* -not -path *.next*)",
+      "Bash(find /home/unix/Action/ActionOrganize/src -name \"*.ts\" -exec grep -l \"app.use\\\\|Router\\\\|listen\\\\|server\\\\|express\" {})",
+      "Bash(find /home/unix/Action -path */functions* -type f)",
+      "Bash(find /home/unix/Action/ActionAct/frontend/src -type f \\\\\\(-name *.tsx -o -name *.ts -o -name *.jsx -o -name *.js \\\\\\))",
+      "Bash(wc -l /home/unix/Action/ActionAct/frontend/src/features/graph/hooks/*.ts)",
+      "Bash(find /home/unix/Action/ActionAct/frontend/src -type f \\\\\\(-name *.ts -o -name *.tsx -o -name *.js -o -name *.jsx \\\\\\))",
+      "Bash(make generate:*)",
+      "Bash(curl -sSL \"https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64\" -o /tmp/buf)",
+      "Bash(chmod +x /tmp/buf)",
+      "Bash(/tmp/buf --version)",
+      "Bash(PATH=\"/tmp:$PATH\" make generate)",
+      "Bash(grep -r CORS_ALLOWED_ORIGINS /home/unix/Action --include=*.yaml --include=*.yml --include=*.env* --include=*.json -l)",
+      "Bash(ls /home/unix/Action/.env*)",
+      "Bash(ls /home/unix/Action/ActionAct/.env*)",
+      "Bash(ls /home/unix/Action/ActionAct/act-api/.env*)",
+      "Bash(grep -v \"^--$\")"
     ]
   }
 }
