@@ -216,6 +216,11 @@ resource "google_cloud_run_v2_job" "action_ingest_job" {
           name  = "INGEST_TOPIC_PREFIX"
           value = "topic:ingest"
         }
+
+        env {
+          name  = "INGEST_ASSET_BUCKET"
+          value = google_storage_bucket.uploads.name
+        }
       }
     }
   }

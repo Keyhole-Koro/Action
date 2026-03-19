@@ -194,6 +194,8 @@ services:
       PUBSUB_TOPIC_NAME: mind-events
       PUBSUB_MODE: emulator
       PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      GCS_EMULATOR_HOST: http://gcs-emulator:4443
+      INGEST_ASSET_BUCKET: action-uploads-dev
       INGEST_TARGET_CHUNK_TOKENS: "6000"
       INGEST_RESERVED_OUTPUT_TOKENS: "512"
       INGEST_PRIORITY: normal
