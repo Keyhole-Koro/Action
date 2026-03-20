@@ -11,6 +11,9 @@ organize_gcs_bucket       = "action-uploads"
 act_api_cors_allowed_origins = [
 	"https://action-490203.web.app",
 	"https://action-490203.firebaseapp.com"
+	# Add the current frontend Cloud Run origin when accessing the app via run.app.
+	# Example:
+	# "https://frontend-xxxxxxxxxx-an.a.run.app",
 ]
 
 # Note: image_tag is provided via -var flag from CI/CD pipeline (git SHA)

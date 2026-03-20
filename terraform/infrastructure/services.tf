@@ -4,10 +4,6 @@
 
 locals {
   image_base = "${var.region}-docker.pkg.dev/${var.project_id}/action"
-  act_api_effective_cors_allowed_origins = distinct(concat(
-    var.act_api_cors_allowed_origins,
-    [module.frontend_service.uri],
-  ))
 }
 
 # ──────────────────────────────────────────────
@@ -68,7 +64,7 @@ module "act_api_service" {
   environment_variables = {
     REDIS_ADDR               = "${google_redis_instance.main.host}:6379"
     REDIS_DB                 = "0"
-    CORS_ALLOWED_ORIGINS     = join(",", local.act_api_effective_cors_allowed_origins)
+    CORS_ALLOWED_ORIGINS     = join(",", var.act_api_cors_allowed_origins)
     ACT_ADK_WORKER_URL       = module.act_adk_worker_service.uri
     GOOGLE_CLOUD_PROJECT     = var.project_id
     GCS_BUCKET               = google_storage_bucket.uploads.name

@@ -250,7 +250,7 @@ services:
       GCLOUD_PROJECT: local-dev
       FIREBASE_CLI_EXPERIMENTS: webframeworks
     command: >-
-      bash -lc ' set -eu; npm install -g firebase-tools; firebase emulators:start --project "$${GCLOUD_PROJECT}" --config /workspace/firebase.json --only auth,firestore --import /data --export-on-exit'
+      bash -lc ' set -eu; firebase emulators:start --project "$${GCLOUD_PROJECT}" --config /workspace/firebase.json --only auth,firestore --import /data --export-on-exit'
     ports:
       - "8081:8081"
       - "9099:9099"
