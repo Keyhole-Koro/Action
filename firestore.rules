@@ -17,6 +17,22 @@ service cloud.firestore {
       return exists(memberPath(workspaceId, request.auth.uid));
     }
 
+    function memberRole(workspaceId) {
+      return isMember(workspaceId)
+        ? get(memberPath(workspaceId, request.auth.uid)).data.role
+        : null;
+    }
+
+    function canEditWorkspace(workspaceId) {
+      return isMember(workspaceId) &&
+        memberRole(workspaceId) != "viewer";
+    }
+
+    function isOwner(workspaceId) {
+      return isMember(workspaceId) &&
+        memberRole(workspaceId) == "owner";
+    }
+
     function isMemberAfter(workspaceId) {
       return existsAfter(memberPath(workspaceId, request.auth.uid));
     }
@@ -38,15 +54,15 @@ service cloud.firestore {
       allow read: if isAuthenticated() &&
         (resource.data.visibility == 'public' || isMember(workspaceId));
       allow create: if isAuthenticated() && isWorkspaceOwnerCreate(workspaceId);
-      allow update, delete: if isAuthenticated() && isMember(workspaceId);
+      allow update, delete: if isAuthenticated() && isOwner(workspaceId);
 
       match /members/{memberId} {
-        // 自分のメンバードキュメントは本人が読める（collectionGroup クエリ用）
-        // ワークスペースメンバーも読める
+        // listUserWorkspaces() は collectionGroup("members").where("uid", "==", request.auth.uid)
+        // で読むため、memberId ではなく resource.data.uid を基準に本人参照を許可する。
         allow read: if isAuthenticated() &&
-          (request.auth.uid == memberId || isMember(workspaceId));
+          ((resource.data.uid is string && resource.data.uid == request.auth.uid) || isMember(workspaceId));
         allow write: if isAuthenticated() &&
-          (isMember(workspaceId) || canBootstrapOwnerMembership(workspaceId, memberId));
+          (isOwner(workspaceId) || canBootstrapOwnerMembership(workspaceId, memberId));
       }
 
       match /{subcollection=**} {
@@ -54,7 +70,7 @@ service cloud.firestore {
           (isMember(workspaceId) ||
            get(workspacePath(workspaceId)).data.visibility == 'public');
         allow write: if isAuthenticated() &&
-          (isMember(workspaceId) || isMemberAfter(workspaceId));
+          (canEditWorkspace(workspaceId) || isMemberAfter(workspaceId));
       }
     }
   }
