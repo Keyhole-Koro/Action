@@ -37,7 +37,9 @@
       "Bash(ls /home/unix/Action/ActionAct/.env*)",
       "Bash(ls /home/unix/Action/ActionAct/act-api/.env*)",
       "Bash(grep -v \"^--$\")",
-      "WebFetch(domain:ai.google.dev)"
+      "WebFetch(domain:ai.google.dev)",
+      "Bash(npm test:*)",
+      "Bash(git stash:*)"
     ]
   }
 }

@@ -100,7 +100,7 @@ services:
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       VERTEX_USE_REAL_API: "false"
       GEMINI_MODEL_FAST: gemini-3-flash-preview
-      GEMINI_MODEL_QUALITY: gemini-3-pro-preview
+      GEMINI_MODEL_QUALITY: gemini-3.1-pro-preview
     command: >-
       bash -lc ' set -eu; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
@@ -148,9 +148,13 @@ services:
       ORGANIZE_GCS_BUCKET: action-uploads-dev
       LEASE_TTL_SECONDS: "120"
       GEMINI_MODEL_FAST: gemini-3-flash-preview
-      GEMINI_MODEL_QUALITY: gemini-3-pro-preview
+      GEMINI_MODEL_QUALITY: gemini-3.1-pro-preview
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
+      LLM_LIMITER_REDIS_URL: redis://redis:6379
+      LLM_LIMITER_TARGET_TPM: "1000000"
+      LLM_LIMITER_TARGET_RPM: "1000"
+      LLM_LIMITER_MAX_CONCURRENCY: "50"
     command: >-
       bash -lc ' set -eu; corepack enable; if [ -f pnpm-lock.yaml ]; then
         pnpm install --frozen-lockfile || pnpm install;
