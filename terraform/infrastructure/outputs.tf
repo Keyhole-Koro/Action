@@ -53,6 +53,12 @@ output "service_accounts" {
     act_adk_worker = module.act_adk_worker_sa.email
     organize       = module.organize_sa.email
     action_ingest  = module.action_ingest_sa.email
+    discord_bot    = module.discord_bot_sa.email
     pubsub_invoker = module.pubsub_invoker_sa.email
   }
+}
+
+output "discord_bot_instance_name" {
+  description = "Discord bot VM instance name"
+  value       = google_compute_instance.discord_bot.name
 }

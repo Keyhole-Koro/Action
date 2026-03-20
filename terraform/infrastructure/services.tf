@@ -62,18 +62,19 @@ module "act_api_service" {
   ingress               = "INGRESS_TRAFFIC_ALL"
 
   environment_variables = {
-    REDIS_ADDR           = "${google_redis_instance.main.host}:6379"
-    REDIS_DB             = "0"
-    CORS_ALLOWED_ORIGINS = join(",", var.act_api_cors_allowed_origins)
-    ACT_ADK_WORKER_URL   = module.act_adk_worker_service.uri
-    GOOGLE_CLOUD_PROJECT = var.project_id
-    GCS_BUCKET           = google_storage_bucket.uploads.name
-    SID_STRICT           = "false"
-    SID_TTL_SECONDS      = "86400"
-    CSRF_TTL_SECONDS     = "3600"
-    SID_REQ_TTL_SECONDS  = "300"
-    SID_LOCK_TTL_SECONDS = "60"
-    GEMINI_MODEL         = var.gemini_model_quality
+    REDIS_ADDR             = "${google_redis_instance.main.host}:6379"
+    REDIS_DB               = "0"
+    CORS_ALLOWED_ORIGINS   = join(",", var.act_api_cors_allowed_origins)
+    ACT_ADK_WORKER_URL     = module.act_adk_worker_service.uri
+    GOOGLE_CLOUD_PROJECT   = var.project_id
+    GCS_BUCKET             = google_storage_bucket.uploads.name
+    DISCORD_APPLICATION_ID = var.discord_application_id
+    SID_STRICT             = "false"
+    SID_TTL_SECONDS        = "86400"
+    CSRF_TTL_SECONDS       = "3600"
+    SID_REQ_TTL_SECONDS    = "300"
+    SID_LOCK_TTL_SECONDS   = "60"
+    GEMINI_MODEL           = var.gemini_model_quality
   }
 
   depends_on = [module.api_enablement.api_services]

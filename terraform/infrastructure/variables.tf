@@ -79,6 +79,17 @@ variable "google_api_key" {
   sensitive   = true
 }
 
+variable "discord_bot_token" {
+  type        = string
+  description = "Discord bot token synced from GitHub Actions secrets"
+  sensitive   = true
+}
+
+variable "discord_application_id" {
+  type        = string
+  description = "Discord application ID used to build invite URLs"
+}
+
 variable "firebase_auth_domain" {
   type        = string
   description = "Firebase Auth Domain"
@@ -93,4 +104,16 @@ variable "action_ingest_workspace_id" {
   type        = string
   default     = "default"
   description = "Workspace ID used by ActionIngest when publishing organize.ingest.received jobs"
+}
+
+variable "discord_bot_zone" {
+  type        = string
+  default     = "asia-northeast1-a"
+  description = "Zone for the Discord bot VM"
+}
+
+variable "discord_bot_machine_type" {
+  type        = string
+  default     = "e2-small"
+  description = "Machine type for the Discord bot VM"
 }

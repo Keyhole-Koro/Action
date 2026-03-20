@@ -58,6 +58,9 @@ locals {
     "sub-a5" = {
       filter = "attributes.type = \"topic.metrics.updated\""
     }
+    "sub-discord-message-received" = {
+      filter = "attributes.type = \"discord.message.received\""
+    }
   }
 }
 

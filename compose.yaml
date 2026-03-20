@@ -66,6 +66,7 @@ services:
       # the browser doesn't need direct CORS access to the GCS emulator.
       UPLOAD_PROXY_ORIGIN: http://localhost:8080
       PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      DISCORD_APPLICATION_ID: ${DISCORD_APPLICATION_ID:-}
     command: >-
       bash -c ' set -eu; if [ -f go.mod ]; then
         go run ./cmd/act-api;
@@ -219,6 +220,30 @@ services:
         condition: service_healthy
       organize:
         condition: service_started
+    networks:
+      - clarify-net
+
+  discord-bot:
+    profiles: [ "full" ]
+    build:
+      context: ./ActionOrganize/discord-bot
+      dockerfile: Dockerfile
+    init: true
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      GOOGLE_CLOUD_PROJECT: local-dev
+      FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      GCS_BUCKET: action-uploads-dev
+      PUBSUB_TOPIC_NAME: mind-events
+    depends_on:
+      firebase-emulator:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_healthy
+      gcs-emulator:
+        condition: service_healthy
     networks:
       - clarify-net
 

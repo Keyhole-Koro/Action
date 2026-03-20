@@ -6,7 +6,7 @@
 
 ローカル起動用の compose は [compose.yaml](/home/unix/Action/compose.yaml) にあります。
 
-この repo の現状では、compose でそのまま参照できる実装ディレクトリは次の 4 つです。
+この repo の現状では、compose でそのまま参照できる実装ディレクトリは次の 5 つです。
 
 * `frontend`: `./ActionAct/frontend`
 * `act-api`: `./ActionAct/act-api`
@@ -22,6 +22,9 @@
 * `full`
   * `ui` に加えて `organize`, `action-ingest`, `firebase-emulator`, `gcs-emulator`, `pubsub-emulator`, `pubsub-bootstrap` を起動します
   * Organize と emulator 群を含めた全経路確認用です
+
+現状の `compose.yaml` では、`act-api` が `pubsub-bootstrap` に依存しているため、`ui` profile だけで `act-api` を `--force-recreate` する運用は崩れます。
+通常の `docker compose --profile ui up` は使えますが、`act-api` の再作成が必要なときは `restart` を使うか `full` profile で上げてください。
 
 ### 起動例
 
@@ -56,7 +59,7 @@ compose の既定 bind mount は次のとおりです。
 * `ORGANIZE_DIR=./ActionOrganize`
 * `action-ingest` は `./ActionIngest` を参照します
 
-この repo では、上記 4 つの既定値がそのまま使えます。
+この repo では、上記の既定値がそのまま使えます。
 
 別の checkout や外部ディレクトリを bind mount したい場合だけ、対応する `*_DIR` を上書きしてください。
 
@@ -111,6 +114,9 @@ Act API:
   * compose 注入値 `900`
 * `SID_LOCK_TTL_SECONDS`
   * compose 注入値 `10`
+* `DISCORD_APPLICATION_ID`
+  * Discord integration UI を使う場合に必須
+  * 未設定だと workspace から invite URL を生成できません
 
 Organize / Act ADK Worker:
 
@@ -166,6 +172,8 @@ Optional override:
 * `frontend` の公開設定は JSON 正本で管理しています
 * `full` profile では [docker/pubsub/init.sh](/home/unix/Action/docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
 * `action-ingest` は `INGEST_INPUT_FILE` を与えたときだけ実行されます
+* `Add Source` の upload は `ActionIngest` を通らず、`act-api -> media.received -> A0 -> input.received` の経路で Organize に入ります
+* `discord-bot` は `full` profile で起動し、Discord message を `mind-events` に publish します
 * Firebase の最小設定は [docker/firebase/firebase.json](/home/unix/Action/docker/firebase/firebase.json) にあります
 * `full` profile の emulator image には Java を同梱しているため、追加の Java セットアップなしで起動できます
 * `organize` 単体開発で emulator を使わない場合は、`STATE_BACKEND=memory` でも起動できます

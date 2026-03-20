@@ -145,6 +145,19 @@ jobs:
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/organize:${{ steps.tag.outputs.tag }}
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/organize:latest
 
+      # ── discord-bot ─────────────────────────────────────
+      - name: Build discord-bot
+        run: |
+          docker build \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/discord-bot:${{ steps.tag.outputs.tag }} \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/discord-bot:latest \
+            ActionOrganize/discord-bot
+
+      - name: Push discord-bot
+        run: |
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/discord-bot:${{ steps.tag.outputs.tag }}
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.AR_REPO }}/discord-bot:latest
+
       # ── action-ingest ───────────────────────────────────
       - name: Build action-ingest
         run: |
@@ -192,15 +205,17 @@ jobs:
           terraform apply -auto-approve \
             -var-file="tfvars/prod.tfvars" \
             -var="image_tag=${{ needs.build-and-push.outputs.image_tag }}" \
+            -var="discord_bot_token=${{ secrets.DISCORD_BOT_TOKEN }}" \
+            -var="discord_application_id=${{ secrets.DISCORD_APPLICATION_ID }}" \
             -var="firebase_api_key=${{ secrets.FIREBASE_API_KEY }}" \
             -var="google_api_key=${{ secrets.GOOGLE_API_KEY }}" \
             -var="firebase_auth_domain=${{ secrets.FIREBASE_AUTH_DOMAIN }}" \
             -var="firebase_app_id=${{ secrets.FIREBASE_APP_ID }}"
 
-      - name: Deploy Firestore rules
+      - name: Deploy Firestore rules and indexes
         run: |
           npm install -g firebase-tools
-          firebase deploy --only firestore:rules --project ${{ env.PROJECT_ID }} --non-interactive
+          firebase deploy --only firestore --project ${{ env.PROJECT_ID }} --non-interactive
 
       - name: Show deployed services
         run: |

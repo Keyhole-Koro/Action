@@ -11,10 +11,12 @@ Action は、会話やメモのような情報を取り込み、整理し、必�
   - 整理済みの知識を参照しながら、ユーザーの問いに応答したり作業を進めたりする実行層です
   - frontend, act-api, act-adk-worker で構成されます
 
-単純化すると、流れは次の 2 本です。
+単純化すると、流れは次の 3 本です。
 
 - `ingest -> organize`
   - 情報を取り込んで構造化する流れ
+- `add source -> media.received -> input.received -> organize`
+  - UI から単発ファイルを追加して知識化する流れ
 - `frontend -> act-api -> act-adk-worker`
   - ユーザーの操作や質問に応答する流れ
 
@@ -27,7 +29,9 @@ flowchart LR
     ActAPI["act-api<br/>session / RPC gateway"]
     Worker["act-adk-worker<br/>LLM runtime"]
     Ingest["ActionIngest<br/>file import job"]
+    Upload["Add Source<br/>upload path"]
     Organize["ActionOrganize<br/>knowledge pipeline"]
+    Discord["discord-bot<br/>guild listener"]
     Store["Firestore / GCS"]
     Redis["Redis"]
     PubSub["Pub/Sub"]
@@ -39,6 +43,10 @@ flowchart LR
     ActAPI --> Redis
 
     Ingest --> PubSub
+    Frontend --> Upload
+    Upload --> PubSub
+    Discord --> PubSub
+    Discord --> Store
     PubSub --> Organize
     Organize --> Store
     Organize --> Redis
@@ -47,8 +55,9 @@ flowchart LR
 この構成で分けている理由は次のとおりです。
 
 - ユーザーとの対話と、知識化の非同期パイプラインを分離する
-- ingest の重い処理を UI リクエストから切り離す
+- 重い ingest と、単発の Add Source を別入口に分ける
 - セッション管理、LLM 実行、知識構造化を別責務にする
+- 外部連携として Discord を追加しても、知識化の入口をそろえられる
 
 ## この構成で得たい性質
 
@@ -61,7 +70,7 @@ flowchart LR
 - 安全性
   - 認証、実行、知識化の責務を分離できる
 - 拡張性
-  - ingest、organize、act を個別に改善しやすい
+  - ingest、Add Source、Discord、act を個別に改善しやすい
 
 ## 次に読むもの
 

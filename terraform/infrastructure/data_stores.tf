@@ -67,3 +67,18 @@ resource "google_secret_manager_secret_version" "google_api_key" {
   secret      = google_secret_manager_secret.google_api_key.id
   secret_data = var.google_api_key
 }
+
+resource "google_secret_manager_secret" "discord_bot_token" {
+  secret_id = "discord-bot-token"
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [module.api_enablement.api_services]
+}
+
+resource "google_secret_manager_secret_version" "discord_bot_token" {
+  secret      = google_secret_manager_secret.discord_bot_token.id
+  secret_data = var.discord_bot_token
+}

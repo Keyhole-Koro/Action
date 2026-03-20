@@ -48,6 +48,13 @@ module "pubsub_invoker_sa" {
   display_name = "Pub/Sub push invoker SA"
 }
 
+module "discord_bot_sa" {
+  source       = "../modules/iam_service_account"
+  project_id   = var.project_id
+  account_id   = "discord-bot-sa"
+  display_name = "Discord bot VM SA"
+}
+
 # ──────────────────────────────────────────────
 # IAM Roles: Application Service Accounts
 # ──────────────────────────────────────────────
@@ -169,6 +176,42 @@ resource "google_service_account_iam_member" "pubsub_push_token_creator" {
   member             = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
 
+resource "google_project_iam_member" "discord_bot_firestore" {
+  project = var.project_id
+  role    = "roles/datastore.user"
+  member  = "serviceAccount:${module.discord_bot_sa.email}"
+}
+
+resource "google_project_iam_member" "discord_bot_storage" {
+  project = var.project_id
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${module.discord_bot_sa.email}"
+}
+
+resource "google_project_iam_member" "discord_bot_pubsub_publisher" {
+  project = var.project_id
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${module.discord_bot_sa.email}"
+}
+
+resource "google_project_iam_member" "discord_bot_secret_accessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${module.discord_bot_sa.email}"
+}
+
+resource "google_project_iam_member" "discord_bot_artifactregistry_reader" {
+  project = var.project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${module.discord_bot_sa.email}"
+}
+
+resource "google_project_iam_member" "discord_bot_logging" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${module.discord_bot_sa.email}"
+}
+
 # ──────────────────────────────────────────────
 # Workload Identity Federation: GitHub Actions
 # ──────────────────────────────────────────────
@@ -224,6 +267,18 @@ resource "google_project_iam_member" "deployer_run_developer" {
   member  = "serviceAccount:${google_service_account.github_deployer.email}"
 }
 
+resource "google_project_iam_member" "deployer_compute_admin" {
+  project = var.project_id
+  role    = "roles/compute.instanceAdmin.v1"
+  member  = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
+resource "google_project_iam_member" "deployer_secret_admin" {
+  project = var.project_id
+  role    = "roles/secretmanager.admin"
+  member  = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
 # 状態保存バケットへのアクセス権限 (tfstate の読み書きに必要)
 resource "google_storage_bucket_iam_member" "deployer_state_bucket_admin" {
   bucket = "action-490203-tfstate"
@@ -258,6 +313,12 @@ resource "google_service_account_iam_member" "deployer_impersonate_organize" {
 
 resource "google_service_account_iam_member" "deployer_impersonate_action_ingest" {
   service_account_id = module.action_ingest_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.github_deployer.email}"
+}
+
+resource "google_service_account_iam_member" "deployer_impersonate_discord_bot" {
+  service_account_id = module.discord_bot_sa.name
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:${google_service_account.github_deployer.email}"
 }
