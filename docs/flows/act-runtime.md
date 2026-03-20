@@ -44,7 +44,7 @@ sequenceDiagram
 - act-adk-worker は推論と context assembly に集中する
 - Discord のような外部会話ログも、worker から保存済みデータとして扱える
 
-## 人に見せるときの一言説明
+## Summary
 
 Action の対話系は、画面、認証付き API、LLM 実行 worker を分けています。
 これにより、UI の更新速度、認証管理、モデル実行を別々に改善しやすくしています。

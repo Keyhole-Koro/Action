@@ -1,7 +1,7 @@
 # Limitations and Roadmap
 
-このページは、Action の現時点での制約と、それをどう捉えているかを説明する資料です。
-目的は「未完成です」と言うことではなく、どこが意図的な設計で、どこが今後の拡張余地なのかを明確にすることです。
+このページは、Action の現時点での制約と、それをどう位置づけているかを説明する資料です。
+どこが意図的な設計で、どこが今後の拡張余地なのかを明確にすることを目的としています。
 
 ## 基本姿勢
 
@@ -69,7 +69,7 @@ Action は、複数の入力経路、knowledge graph、Act 実行、Discord inte
 
 - group rectangle の整理
 - より安定した subtree packing
-- 発表や実利用で見やすい視覚整理の強化
+- 視覚整理の強化
 
 ## 4. Act は完全な agent OS ではなく、knowledge graph 前提の実行系
 
@@ -83,7 +83,7 @@ Action は、複数の入力経路、knowledge graph、Act 実行、Discord inte
 
 - まずは knowledge graph を活かす実行体験に集中したい
 - agent を過剰に一般化すると、プロダクトの軸がぼやける
-- graph と action の接続を強くする方が Action らしい
+- graph と action の接続に集中したい
 
 ### 今後
 
@@ -143,8 +143,9 @@ Action の制約の多くは、プロダクトの軸を守るための制約で�
 - 外部入力チャネルの追加
 - より大きな workspace 運用に耐える観測性と制御性
 
-## 審査で使える言い方
+## Summary
 
-> Action には未実装領域もありますが、今の制約の多くは設計上の意図です。  
-> たとえば Discord binding は完全自動にせず confirm を残し、Add Source は heavy ingest から分離し、agent child は graph の意味を壊さないよう自動レイアウトに寄せています。  
-> これは「何でもできる demo」を目指すのではなく、知識化と行動の接続という核を壊さないための判断です。
+Action には未実装領域もありますが、今の制約の多くは設計上の意図です。
+たとえば Discord binding は完全自動にせず confirm を残し、Add Source は heavy ingest から分離し、agent child は graph の意味を壊さないよう自動レイアウトに寄せています。
+
+これは、知識化と行動の接続という核を保ちながら段階的に拡張するための判断です。

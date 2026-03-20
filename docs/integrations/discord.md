@@ -84,7 +84,7 @@ Act の実行時には、`act-adk-worker` が保存済み Discord ログを tool
 
 これは live の Discord API 呼び出しではなく、GCS / Firestore に保存済みのログ参照です。
 
-## 人に見せるときの一言説明
+## Summary
 
 Action は Discord を workspace に接続し、会話を継続的に取り込みます。
 取り込んだログは Organize で知識化され、Act からも保存済み履歴として再利用できます。

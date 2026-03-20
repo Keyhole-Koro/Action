@@ -1,7 +1,7 @@
 # Google Stack
 
 このページは、Action が Google 技術をどこでどう使っているかを説明する資料です。
-ハッカソン審査で「Google の技術をうまく活用できているか」に答えるため、機能ごとではなくシステム全体の役割分担として整理しています。
+機能ごとの列挙ではなく、システム全体の役割分担として整理しています。
 
 ## 一覧
 
@@ -38,10 +38,6 @@ Action における Gemini は、単なる chat completion API ではありま�
 
 つまり、知識化された情報を「使って次の行動を支援する」ために使っています。
 
-### 審査での言い方
-
-> Gemini を chat bot としてだけ使うのではなく、知識化パイプラインと Act 実行の両方に組み込み、AI をプロダクトの中心的な runtime にしています。
-
 ## 2. Cloud Run をどう使っているか
 
 Action の HTTP サービスは Cloud Run を前提に分離しています。
@@ -62,10 +58,6 @@ Action の HTTP サービスは Cloud Run を前提に分離しています。
 - worker や organize を public にしたくない
 - サービスごとに独立して改善・デプロイしたい
 
-### 審査での言い方
-
-> Cloud Run を 1 サービスの hosting に使ったのではなく、UI、認証境界、推論 runtime、知識化 pipeline を分離する実行基盤として使っています。
-
 ## 3. Firestore をどう使っているか
 
 Firestore は Action の正本ストアです。
@@ -83,10 +75,6 @@ Firestore は Action の正本ストアです。
 - 小さな document 単位で更新しやすい
 - graph や integration 状態の正本として扱いやすい
 
-### 審査での言い方
-
-> Firestore を単なる保存先ではなく、graph と workspace state の source of truth として使っています。
-
 ## 4. Cloud Storage をどう使っているか
 
 GCS は raw data の保存に使っています。
@@ -102,10 +90,6 @@ GCS は raw data の保存に使っています。
 - raw input を正本 graph と分けて持てる
 - あとから再処理しやすい
 - 大きい file を Firestore に持ち込まずに済む
-
-### 審査での言い方
-
-> Firestore に全部を入れず、raw data は GCS に分離することで、再処理しやすい構成にしています。
 
 ## 5. Pub/Sub をどう使っているか
 
@@ -129,10 +113,6 @@ Pub/Sub は Action の内部イベント基盤です。
 Action の堅牢性は、この非同期境界にかなり依存しています。
 同期 API で全部を処理しないからこそ、応答性と拡張性を両立できます。
 
-### 審査での言い方
-
-> Pub/Sub を通知用途ではなく、知識化 pipeline を成り立たせる内部 event bus として使っています。
-
 ## 6. Redis をどう使っているか
 
 Redis は正本保存ではなく、一時的な request 制御に使っています。
@@ -147,10 +127,6 @@ Redis は正本保存ではなく、一時的な request 制御に使ってい�
 
 - 低レイテンシで扱いたい
 - 正本データではなく ephemeral state だから
-
-### 審査での言い方
-
-> Redis は graph の正本ではなく、session や request gate のような短命制御に限定しています。
 
 ## 7. Secret Manager / Artifact Registry / Compute Engine
 
@@ -168,10 +144,6 @@ Redis は正本保存ではなく、一時的な request 制御に使ってい�
 
 - `discord-bot` を常駐で動かす
 - Discord WebSocket のような長時間接続を安定して扱う
-
-### 審査での言い方
-
-> Google 技術を AI API だけで終わらせず、実運用に必要な secret, image distribution, long-running worker まで含めて組んでいます。
 
 ## 8. なぜ Google 技術の使い方として強いのか
 
@@ -194,8 +166,9 @@ Action のポイントは、Google 技術を単発 feature のために使って
 つまり、「Google の技術をいろいろ使いました」ではなく、
 「Google の技術でシステムの責務分離そのものを作った」と説明できます。
 
-## 9. 審査で使える短い説明文
+## 9. Summary
 
-> Action では、Google 技術を feature 単位ではなく architecture 単位で使っています。  
-> Gemini は知識化と Act 実行の中心、Cloud Run は UI / API / worker / pipeline の分離基盤、Firestore は state の正本、GCS は raw data の保管、Pub/Sub は内部 event bus、Redis は request 制御です。  
-> それぞれを役割で分けることで、完成度と拡張性の両方を確保しています。
+Action では、Google 技術を feature 単位ではなく architecture 単位で使っています。
+Gemini は知識化と Act 実行の中心、Cloud Run は UI / API / worker / pipeline の分離基盤、Firestore は state の正本、GCS は raw data の保管、Pub/Sub は内部 event bus、Redis は request 制御を担当します。
+
+それぞれを役割で分けることで、システム全体の完成度と拡張性を確保しています。

@@ -1,7 +1,7 @@
 # Architecture Diagrams
 
-このページは、発表や説明にそのまま使いやすい図だけをまとめた資料です。
-細かい仕様説明は省き、構成と流れを一目で伝えることを優先しています。
+このページは、Action の構成と主要フローを図としてまとめた資料です。
+細かい仕様説明は省き、構成と流れを短く参照できることを優先しています。
 
 ## 1. System Overview
 
@@ -33,7 +33,7 @@ flowchart LR
     Organize --> Redis
 ```
 
-使いどころ:
+Notes:
 
 - 最初の全体説明
 - 「何のサービスがあるのか」を短く示したいとき
@@ -55,7 +55,7 @@ flowchart LR
     File --> Normalize --> Topic --> Receive --> Atomize --> Resolve --> Draft --> Node --> Data
 ```
 
-使いどころ:
+Notes:
 
 - `ActionIngest` の役割説明
 - 大きい入力をどう扱うかの説明
@@ -78,7 +78,7 @@ flowchart LR
     User --> Frontend --> API --> Media --> A0 --> Input --> A1 --> Resolve --> Draft --> Data
 ```
 
-使いどころ:
+Notes:
 
 - UI からの file 追加がどう知識化されるか
 - `ActionIngest` とは別入口であることの説明
@@ -104,7 +104,7 @@ sequenceDiagram
     F-->>U: progressive UI update
 ```
 
-使いどころ:
+Notes:
 
 - UI, API, worker の責務分離説明
 - streaming response の説明
@@ -132,7 +132,7 @@ sequenceDiagram
     Frontend->>API: confirm binding
 ```
 
-使いどころ:
+Notes:
 
 - Discord connect が半自動 confirm であることの説明
 - 安全性と UX のバランス説明
@@ -155,7 +155,7 @@ sequenceDiagram
     O->>S: update topic / evidence / node
 ```
 
-使いどころ:
+Notes:
 
 - Discord が単なる bot demo ではなく knowledge pipeline に入ることの説明
 
@@ -181,19 +181,12 @@ flowchart LR
     Bot --> Internal
 ```
 
-使いどころ:
+Notes:
 
 - public / internal boundary の説明
 - secret や internal service をどう閉じているかの説明
 
-## 8. 発表での図の使い分け
+## 8. Diagram Set
 
-おすすめの順番:
-
-1. `System Overview`
-2. `Add Source Flow` または `Large Import Flow`
-3. `Act Runtime Flow`
-4. `Discord Integration Flow`
-5. `Security Boundary`
-
-短い発表なら `System Overview`, `Act Runtime Flow`, `Discord Integration Flow` の 3 枚だけでも成立します。
+このページにある図は、それぞれ独立して参照できます。
+全体構成を先に見る場合は `System Overview`、実行系を見る場合は `Act Runtime Flow`、入力経路を見る場合は `Large Import Flow` と `Add Source Flow`、外部連携を見る場合は `Discord Integration Flow` と `Discord Message Ingestion` を参照してください。

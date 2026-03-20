@@ -1,26 +1,38 @@
 # Action Docs
 
-この `docs/` は、Action を外部の人に説明するときの入口です。
-まずは全体像を把握し、その後にフローやセキュリティを個別に読める構成にしています。
+この `docs/` は、Action の全体構成、主要フロー、integration、設計上の考え方をまとめた入口です。
+全体像を把握したあと、必要に応じて flow、architecture、security、robustness を個別に読める構成にしています。
 
-## 読み順
+## Documents
 
-1. [Overview](./overview.md)
-2. [Hackathon Narrative](./hackathon.md)
-3. [Robustness Design](./robustness.md)
-4. [Google Stack](./google-stack.md)
-5. [Glossary](./glossary.md)
-6. [Limitations and Roadmap](./limitations-and-roadmap.md)
-7. [Architecture Diagrams](./architecture-diagrams.md)
-8. [Ingest / Organize Flow](./flows/ingest-organize.md)
-9. [Act Runtime Flow](./flows/act-runtime.md)
-10. [Discord Integration](./integrations/discord.md)
-11. [Security Overview](./security.md)
+### Overview
 
-## この docs が対象にしていること
+- [Overview](./overview.md)
+- [Glossary](./glossary.md)
+
+### Flows
+
+- [Ingest / Organize Flow](./flows/ingest-organize.md)
+- [Act Runtime Flow](./flows/act-runtime.md)
+
+### Integrations
+
+- [Discord Integration](./integrations/discord.md)
+
+### Architecture
+
+- [Robustness Design](./robustness.md)
+- [Google Stack](./google-stack.md)
+- [Architecture Diagrams](./architecture-diagrams.md)
+- [Limitations and Roadmap](./limitations-and-roadmap.md)
+
+### Security
+
+- [Security Overview](./security.md)
+
+## Scope
 
 - Action が何をするシステムか
-- ハッカソン審査でどう見せるか
 - 堅牢性をどう設計し、どう実装したか
 - Google 技術をどこでどう使っているか
 - 用語の意味
@@ -30,9 +42,9 @@
 - ingest / organize の処理がどう進むか
 - frontend / act-api / act-adk-worker の役割分担
 - Add Source と Discord integration のような主要な対話導線
-- 対外説明で必要なセキュリティの考え方
+- セキュリティ境界と運用上の前提
 
-## 深掘り用の関連資料
+## Related
 
 - ルートセットアップ: [README.md](/home/unix/Action/README.md)
 - デプロイ手順: [DEPLOYMENT.md](/home/unix/Action/DEPLOYMENT.md)
