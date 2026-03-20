@@ -1,6 +1,6 @@
 # Act
 
-全体像を短く把握したい場合は [ARCHITECTURE.md](/home/unix/Action/ARCHITECTURE.md) を参照してください。
+全体像を短く把握したい場合は [docs/README.md](/home/unix/Action/docs/README.md) を参照してください。
 
 ## Docker Compose
 
