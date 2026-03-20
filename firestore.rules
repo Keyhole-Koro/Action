@@ -49,6 +49,12 @@ service cloud.firestore {
         request.resource.data.role == "owner";
     }
 
+    // Collection Group Query for members
+    match /{path=**}/members/{memberId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.uid == request.auth.uid || isMember(path[path.size() - 3]));
+    }
+
     match /workspaces/{workspaceId} {
       // public workspace は誰でも読める、private は自分がメンバーの場合のみ
       allow read: if isAuthenticated() &&
