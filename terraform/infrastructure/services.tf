@@ -137,6 +137,7 @@ module "organize_service" {
   memory_limit          = "2Gi"
   startup_cpu_boost     = true
   allow_public          = false
+  allowed_invokers      = [module.pubsub_invoker_sa.email]
   min_instances         = 1
   max_instances         = 5
   vpc_connector_id      = google_vpc_access_connector.redis_connector.id

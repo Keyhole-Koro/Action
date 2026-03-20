@@ -163,6 +163,12 @@ resource "google_project_iam_member" "action_ingest_pubsub_publisher" {
   member  = "serviceAccount:${module.action_ingest_sa.email}"
 }
 
+resource "google_service_account_iam_member" "pubsub_push_token_creator" {
+  service_account_id = module.pubsub_invoker_sa.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+}
+
 # ──────────────────────────────────────────────
 # Workload Identity Federation: GitHub Actions
 # ──────────────────────────────────────────────
