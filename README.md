@@ -1,5 +1,7 @@
 # Act
 
+全体像を短く把握したい場合は [ARCHITECTURE.md](/home/unix/Action/ARCHITECTURE.md) を参照してください。
+
 ## Docker Compose
 
 ローカル起動用の compose は [compose.yaml](/home/unix/Action/compose.yaml) にあります。
