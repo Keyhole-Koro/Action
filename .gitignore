@@ -18,5 +18,35 @@ build/
 docker/firebase/*debug.log
 
 tmp
+.tmp-action-ingest-remote/
+ActionIngest.local/
 
 .env
+
+.secrets/
+
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.tfplan
+plan.out
+
+# Exception: allow .example files for templates
+!**/tfvars/*.tfvars.example
+
+.pytest_cache/
+coverage.xml
+htmlcov/
+node_modules/
+dist/
+build/
+*.log
+*.tsbuildinfo

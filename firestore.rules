@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function workspacePath(workspaceId) {
+      return /databases/$(database)/documents/workspaces/$(workspaceId);
+    }
+
+    function memberPath(workspaceId, uid) {
+      return /databases/$(database)/documents/workspaces/$(workspaceId)/members/$(uid);
+    }
+
+    function isMember(workspaceId) {
+      return exists(memberPath(workspaceId, request.auth.uid));
+    }
+
+    function memberRole(workspaceId) {
+      return isMember(workspaceId)
+        ? get(memberPath(workspaceId, request.auth.uid)).data.role
+        : null;
+    }
+
+    function canEditWorkspace(workspaceId) {
+      return isMember(workspaceId) &&
+        memberRole(workspaceId) != "viewer";
+    }
+
+    function isOwner(workspaceId) {
+      return isMember(workspaceId) &&
+        memberRole(workspaceId) == "owner";
+    }
+
+    function isMemberAfter(workspaceId) {
+      return existsAfter(memberPath(workspaceId, request.auth.uid));
+    }
+
+    function isWorkspaceOwnerCreate(workspaceId) {
+      return request.auth.uid == request.resource.data.createdBy;
+    }
+
+    function canBootstrapOwnerMembership(workspaceId, memberId) {
+      return request.auth.uid == memberId &&
+        existsAfter(workspacePath(workspaceId)) &&
+        getAfter(workspacePath(workspaceId)).data.createdBy == request.auth.uid &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.role == "owner";
+    }
+
+    match /workspaces/{workspaceId} {
+      // public workspace は誰でも読める、private は自分がメンバーの場合のみ
+      allow read: if isAuthenticated() &&
+        (resource.data.visibility == 'public' || isMember(workspaceId));
+      allow create: if isAuthenticated() && isWorkspaceOwnerCreate(workspaceId);
+      allow update, delete: if isAuthenticated() && isOwner(workspaceId);
+
+      match /members/{memberId} {
+        // listUserWorkspaces() は collectionGroup("members").where("uid", "==", request.auth.uid)
+        // で読むため、memberId ではなく resource.data.uid を基準に本人参照を許可する。
+        allow read: if isAuthenticated() &&
+          ((resource.data.uid is string && resource.data.uid == request.auth.uid) || isMember(workspaceId));
+        allow write: if isAuthenticated() &&
+          (isOwner(workspaceId) || canBootstrapOwnerMembership(workspaceId, memberId));
+      }
+
+      match /{subcollection=**} {
+        allow read: if isAuthenticated() &&
+          (isMember(workspaceId) ||
+           get(workspacePath(workspaceId)).data.visibility == 'public');
+        allow write: if isAuthenticated() &&
+          (canEditWorkspace(workspaceId) || isMemberAfter(workspaceId));
+      }
+    }
+  }
+}

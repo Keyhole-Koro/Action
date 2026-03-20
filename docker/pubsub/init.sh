@@ -33,6 +33,7 @@ if (defined $line && $line =~ m{^HTTP/\S+\s+(\d{3})}) {
 TOPIC="mind-events"
 DLQ_TOPIC="mind-events-dlq"
 SUBSCRIPTIONS=(
+  "sub-ingest"
   "sub-a0"
   "sub-a1"
   "sub-topic-resolver"
@@ -89,6 +90,9 @@ create_push_subscription() {
 subscription_filter() {
   local subscription="$1"
   case "${subscription}" in
+    "sub-ingest")
+      printf '%s' '"attributes.type = \"organize.ingest.received\""'
+      ;;
     "sub-a0")
       printf '%s' '"attributes.type = \"media.received\""'
       ;;

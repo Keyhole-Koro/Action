@@ -25,10 +25,13 @@ message RunActRequest {
   LLMConfig llm_config = 8;
   // 旧クライアント互換用。認証正本には使わない（deprecated）
   string uid = 9;
-  // インラインメディア（画像、ファイル等）
-  repeated MediaData user_media = 10;
+  // フィールド番号 10 は廃止済み (旧: user_media インラインバイト)。
+  reserved 10;
+  reserved "user_media";
   // frontend が送る選択ノードの内容スナップショット
   repeated SelectedNodeContext selected_node_contexts = 11;
+  // GCS に事前アップロード済みファイルの参照。
+  repeated MediaRef user_media_refs = 12;
 }
 
 message SelectedNodeContext {
@@ -41,9 +44,12 @@ message SelectedNodeContext {
   string detail_html = 7;
 }
 
-message MediaData {
+// MediaRef references a file already uploaded to GCS via /api/upload/presign.
+message MediaRef {
   string mime_type = 1;
-  bytes data = 2;
+  // Object path within the bucket (e.g. "mind/inputs/in_abc123.raw").
+  string gcs_object_key = 2;
+  int64 size_bytes = 3;
 }
 
 enum ActType {
