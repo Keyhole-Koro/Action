@@ -243,6 +243,8 @@ terraform apply -var="image_tag=v1.0.0-previous" -auto-approve
 
 Google Secret Manager に保存されたシークレットは、Cloud Run のサービスアカウント経由でアクセスされます。
 
+また、`act-api` が `/api/upload/presign` で GCS の V4 signed URL を発行するため、実行サービスアカウントには自分自身に対する `roles/iam.serviceAccountTokenCreator` が必要です。
+
 ### シークレット追加例
 
 ```bash

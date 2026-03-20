@@ -77,6 +77,12 @@ resource "google_project_iam_member" "act_api_secret_accessor" {
   member  = "serviceAccount:${module.act_api_sa.email}"
 }
 
+resource "google_service_account_iam_member" "act_api_self_token_creator" {
+  service_account_id = module.act_api_sa.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${module.act_api_sa.email}"
+}
+
 # act-adk-worker roles
 resource "google_project_iam_member" "adk_worker_firestore" {
   project = var.project_id
