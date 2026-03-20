@@ -62,20 +62,18 @@ module "act_api_service" {
   ingress               = "INGRESS_TRAFFIC_ALL"
 
   environment_variables = {
-    REDIS_ADDR               = "${google_redis_instance.main.host}:6379"
-    REDIS_DB                 = "0"
-    CORS_ALLOWED_ORIGINS     = join(",", var.act_api_cors_allowed_origins)
-    ACT_ADK_WORKER_URL       = module.act_adk_worker_service.uri
-    GOOGLE_CLOUD_PROJECT     = var.project_id
-    GCS_BUCKET               = google_storage_bucket.uploads.name
-    SID_STRICT               = "false"
-    SID_TTL_SECONDS          = "86400"
-    CSRF_TTL_SECONDS         = "3600"
-    SID_REQ_TTL_SECONDS      = "300"
-    SID_LOCK_TTL_SECONDS     = "60"
-    GOOGLE_API_KEY           = var.firebase_api_key
-    GOOGLE_API_KEY_SECRET_ID = google_secret_manager_secret.google_api_key.secret_id
-    GEMINI_MODEL             = var.gemini_model_quality
+    REDIS_ADDR           = "${google_redis_instance.main.host}:6379"
+    REDIS_DB             = "0"
+    CORS_ALLOWED_ORIGINS = join(",", var.act_api_cors_allowed_origins)
+    ACT_ADK_WORKER_URL   = module.act_adk_worker_service.uri
+    GOOGLE_CLOUD_PROJECT = var.project_id
+    GCS_BUCKET           = google_storage_bucket.uploads.name
+    SID_STRICT           = "false"
+    SID_TTL_SECONDS      = "86400"
+    CSRF_TTL_SECONDS     = "3600"
+    SID_REQ_TTL_SECONDS  = "300"
+    SID_LOCK_TTL_SECONDS = "60"
+    GEMINI_MODEL         = var.gemini_model_quality
   }
 
   depends_on = [module.api_enablement.api_services]
@@ -108,8 +106,14 @@ module "act_adk_worker_service" {
     GCS_BUCKET_NAME      = google_storage_bucket.uploads.name
     PUBSUB_TOPIC_NAME    = google_pubsub_topic.mind_events.name
     GEMINI_MODEL         = var.gemini_model_fast
-    GOOGLE_API_KEY       = var.firebase_api_key
     GOOGLE_CLOUD_PROJECT = var.project_id
+  }
+
+  secret_environment_variables = {
+    GOOGLE_API_KEY = {
+      secret  = google_secret_manager_secret.google_api_key.secret_id
+      version = "latest"
+    }
   }
 
   depends_on = [module.api_enablement.api_services]
@@ -145,7 +149,6 @@ module "organize_service" {
     PUBSUB_PUBLISH_ENABLED      = "true"
     ORGANIZE_GCS_BUCKET         = google_storage_bucket.uploads.name
     LEASE_TTL_SECONDS           = "301"
-    GOOGLE_API_KEY              = var.firebase_api_key
     GEMINI_MODEL_FAST           = var.gemini_model_fast
     GEMINI_MODEL_QUALITY        = var.gemini_model_quality
     REDIS_HOST                  = google_redis_instance.main.host
@@ -154,6 +157,13 @@ module "organize_service" {
     LLM_LIMITER_TARGET_TPM      = "1200000"
     LLM_LIMITER_TARGET_RPM      = "10000"
     LLM_LIMITER_MAX_CONCURRENCY = "50"
+  }
+
+  secret_environment_variables = {
+    GOOGLE_API_KEY = {
+      secret  = google_secret_manager_secret.google_api_key.secret_id
+      version = "latest"
+    }
   }
 
   depends_on = [module.api_enablement.api_services]

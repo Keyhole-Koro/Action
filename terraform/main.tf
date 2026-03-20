@@ -15,6 +15,7 @@ module "infrastructure" {
   organize_gcs_bucket          = var.organize_gcs_bucket
   act_api_cors_allowed_origins = var.act_api_cors_allowed_origins
   firebase_api_key             = var.firebase_api_key
+  google_api_key               = var.google_api_key
   firebase_auth_domain         = var.firebase_auth_domain
   firebase_app_id              = var.firebase_app_id
   action_ingest_workspace_id   = var.action_ingest_workspace_id

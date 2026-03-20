@@ -95,14 +95,13 @@ services:
     environment:
       PORT: "8000"
       GOOGLE_CLOUD_PROJECT: local-dev
-      GOOGLE_API_KEY:
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
       VERTEX_USE_REAL_API: "false"
       GEMINI_MODEL_FAST: gemini-3-flash-preview
       GEMINI_MODEL_QUALITY: gemini-3.1-pro-preview
     command: >-
-      bash -lc ' set -eu; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
+      bash -lc ' set -eu; export GOOGLE_API_KEY="$$(cat /run/secrets/google_api_key)"; python -m pip install --no-cache-dir --upgrade pip; if [ -f requirements.txt ]; then
         pip install --no-cache-dir -r requirements.txt;
       elif [ -f pyproject.toml ]; then
         pip install --no-cache-dir -e .;
@@ -116,6 +115,8 @@ services:
       fi'
     ports:
       - "8000:8000"
+    secrets:
+      - google_api_key
     networks:
       - clarify-net
 
@@ -149,14 +150,13 @@ services:
       LEASE_TTL_SECONDS: "120"
       GEMINI_MODEL_FAST: gemini-3-flash-preview
       GEMINI_MODEL_QUALITY: gemini-3.1-pro-preview
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_sa.json
       LLM_LIMITER_REDIS_URL: redis://redis:6379
       LLM_LIMITER_TARGET_TPM: "1000000"
       LLM_LIMITER_TARGET_RPM: "1000"
       LLM_LIMITER_MAX_CONCURRENCY: "50"
     command: >-
-      bash -lc ' set -eu; corepack enable; if [ -f pnpm-lock.yaml ]; then
+      bash -lc ' set -eu; export GOOGLE_API_KEY="$$(cat /run/secrets/google_api_key)"; corepack enable; if [ -f pnpm-lock.yaml ]; then
         pnpm install --frozen-lockfile || pnpm install;
         pnpm dev;
       elif [ -f yarn.lock ]; then
@@ -179,6 +179,8 @@ services:
         condition: service_healthy
       gcs-emulator:
         condition: service_healthy
+    secrets:
+      - google_api_key
     ports:
       - "8090:8090"
     networks:
@@ -325,6 +327,10 @@ services:
 networks:
   clarify-net:
     name: clarify-net
+
+secrets:
+  google_api_key:
+    file: ${GOOGLE_API_KEY_FILE:-./.secrets/google_api_key}
 
 volumes:
   frontend-node-modules:

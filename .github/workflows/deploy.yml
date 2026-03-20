@@ -193,6 +193,7 @@ jobs:
             -var-file="tfvars/prod.tfvars" \
             -var="image_tag=${{ needs.build-and-push.outputs.image_tag }}" \
             -var="firebase_api_key=${{ secrets.FIREBASE_API_KEY }}" \
+            -var="google_api_key=${{ secrets.GOOGLE_API_KEY }}" \
             -var="firebase_auth_domain=${{ secrets.FIREBASE_AUTH_DOMAIN }}" \
             -var="firebase_app_id=${{ secrets.FIREBASE_APP_ID }}"
 

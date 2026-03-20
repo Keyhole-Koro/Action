@@ -28,6 +28,19 @@ resource "google_cloud_run_v2_service" "service" {
         }
       }
 
+      dynamic "env" {
+        for_each = var.secret_environment_variables
+        content {
+          name = env.key
+          value_source {
+            secret_key_ref {
+              secret  = env.value.secret
+              version = env.value.version
+            }
+          }
+        }
+      }
+
       resources {
         limits = {
           cpu    = var.cpu_limit

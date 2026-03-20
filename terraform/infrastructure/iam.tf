@@ -102,6 +102,12 @@ resource "google_project_iam_member" "adk_worker_aiplatform" {
   member  = "serviceAccount:${module.act_adk_worker_sa.email}"
 }
 
+resource "google_project_iam_member" "adk_worker_secret_accessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${module.act_adk_worker_sa.email}"
+}
+
 # organize roles
 resource "google_project_iam_member" "organize_firestore" {
   project = var.project_id

@@ -23,6 +23,8 @@ ActionIngest.local/
 
 .env
 
+.secrets/
+
 .terraform/
 *.tfstate
 *.tfstate.*

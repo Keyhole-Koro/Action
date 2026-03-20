@@ -62,3 +62,8 @@ resource "google_secret_manager_secret" "google_api_key" {
 
   depends_on = [module.api_enablement.api_services]
 }
+
+resource "google_secret_manager_secret_version" "google_api_key" {
+  secret      = google_secret_manager_secret.google_api_key.id
+  secret_data = var.google_api_key
+}

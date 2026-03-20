@@ -73,6 +73,12 @@ variable "firebase_api_key" {
   description = "Firebase API Key"
 }
 
+variable "google_api_key" {
+  type        = string
+  description = "Google AI Studio API Key"
+  sensitive   = true
+}
+
 variable "firebase_auth_domain" {
   type        = string
   description = "Firebase Auth Domain"

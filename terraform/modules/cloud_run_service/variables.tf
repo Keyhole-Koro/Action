@@ -28,6 +28,15 @@ variable "environment_variables" {
   default     = {}
 }
 
+variable "secret_environment_variables" {
+  type = map(object({
+    secret  = string
+    version = optional(string, "latest")
+  }))
+  description = "Secret Manager-backed environment variables for the container"
+  default     = {}
+}
+
 variable "cpu_limit" {
   type        = string
   description = "CPU limit (e.g., '1' or '2')"

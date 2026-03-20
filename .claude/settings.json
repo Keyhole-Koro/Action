@@ -39,7 +39,9 @@
       "Bash(grep -v \"^--$\")",
       "WebFetch(domain:ai.google.dev)",
       "Bash(npm test:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(grep -r \"kind === ''r''\" /home/unix/Action/ActionAct/frontend/src --include=\"*.tsx\" --include=\"*.ts\")",
+      "Bash(grep -r \"<rect\\\\|kind === \"\"r\"\"\\\\|kind === ''r''\" /home/unix/Action/ActionAct/frontend/src --include=\"*.tsx\" --include=\"*.ts\")"
     ]
   }
 }

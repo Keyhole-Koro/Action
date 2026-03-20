@@ -113,6 +113,7 @@ terraform-plan:
 			-var-file="tfvars/prod.tfvars" \
 			-var="image_tag=$(IMAGE_TAG)" \
 			-var="firebase_api_key=$${FIREBASE_API_KEY}" \
+			-var="google_api_key=$${GOOGLE_API_KEY}" \
 			-var="firebase_auth_domain=$${FIREBASE_AUTH_DOMAIN}" \
 			-var="firebase_app_id=$${FIREBASE_APP_ID}" \
 			-var="action_ingest_workspace_id=$${ACTION_INGEST_WORKSPACE_ID:-default}"
@@ -127,6 +128,7 @@ terraform-apply:
 			-var-file="tfvars/prod.tfvars" \
 			-var="image_tag=$(IMAGE_TAG)" \
 			-var="firebase_api_key=$${FIREBASE_API_KEY}" \
+			-var="google_api_key=$${GOOGLE_API_KEY}" \
 			-var="firebase_auth_domain=$${FIREBASE_AUTH_DOMAIN}" \
 			-var="firebase_app_id=$${FIREBASE_APP_ID}" \
 			-var="action_ingest_workspace_id=$${ACTION_INGEST_WORKSPACE_ID:-default}"
