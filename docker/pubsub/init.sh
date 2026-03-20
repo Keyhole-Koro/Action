@@ -130,11 +130,44 @@ subscription_filter() {
   esac
 }
 
+
+
+create_push_subscription_to_endpoint() {
+  local topic="$1"
+  local subscription="$2"
+  local endpoint="$3"
+
+  if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" GET)" = "200" ]; then
+    if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" DELETE)" != "200" ]; then
+      printf 'Failed to delete subscription: %s\n' "${subscription}" >&2
+      exit 1
+    fi
+  fi
+
+  if [ "$(http_status "${PUBSUB_BASE_URL}/projects/${PUBSUB_PROJECT_ID}/subscriptions/${subscription}" PUT "{
+      \"topic\": \"projects/${PUBSUB_PROJECT_ID}/topics/${topic}\",
+      \"pushConfig\": {
+        \"pushEndpoint\": \"${endpoint}\"
+      },
+      \"ackDeadlineSeconds\": 30
+    }")" != "200" ]; then
+    printf 'Failed to create push subscription: %s\n' "${subscription}" >&2
+    exit 1
+  fi
+  printf 'Created push subscription: %s -> %s\n' "${subscription}" "${endpoint}"
+}
+
 create_topic "${TOPIC}"
 create_topic "${DLQ_TOPIC}"
 
 for subscription in "${SUBSCRIPTIONS[@]}"; do
   create_push_subscription "${subscription}"
 done
+
+
+DISCORD_MESSAGE_TOPIC="discord-message-received"
+DISCORD_MESSAGE_SUBSCRIPTION="sub-discord-message-received"
+create_topic "${DISCORD_MESSAGE_TOPIC}"
+create_push_subscription_to_endpoint "${DISCORD_MESSAGE_TOPIC}" "${DISCORD_MESSAGE_SUBSCRIPTION}" "${ORGANIZE_PUSH_ENDPOINT}"
 
 printf 'Pub/Sub bootstrap finished for project %s\n' "${PUBSUB_PROJECT_ID}"

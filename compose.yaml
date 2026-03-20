@@ -98,6 +98,7 @@ services:
       GOOGLE_CLOUD_PROJECT: local-dev
       FIRESTORE_EMULATOR_HOST: firebase-emulator:8081
       STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      GCS_DISCORD_BUCKET: discord-logs-dev
       VERTEX_USE_REAL_API: "false"
       GEMINI_MODEL_FAST: gemini-3-flash-preview
       GEMINI_MODEL_QUALITY: gemini-3.1-pro-preview
@@ -325,6 +326,30 @@ services:
       interval: 10s
       timeout: 5s
       retries: 12
+    networks:
+      - clarify-net
+
+  discord-bot:
+    profiles: [ "full" ]
+    build:
+      context: ./ActionOrganize/discord-bot
+    init: true
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      DISCORD_GUILD_IDS: ${DISCORD_GUILD_IDS:-}
+      GCS_BUCKET: discord-logs-dev
+      GOOGLE_CLOUD_PROJECT: local-dev
+      WORKSPACE_ID: ${WORKSPACE_ID:-default}
+      STORAGE_EMULATOR_HOST: http://gcs-emulator:4443
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_DISCORD_TOPIC: discord-message-received
+    depends_on:
+      pubsub-emulator:
+        condition: service_healthy
+      pubsub-bootstrap:
+        condition: service_completed_successfully
+      gcs-emulator:
+        condition: service_healthy
     networks:
       - clarify-net
 
