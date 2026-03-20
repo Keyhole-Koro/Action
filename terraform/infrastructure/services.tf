@@ -134,8 +134,9 @@ module "organize_service" {
   image_uri             = "${local.image_base}/organize:${var.image_tag}"
   service_account_email = module.organize_sa.email
   container_port        = 8090
+  container_concurrency = 1
   cpu_limit             = "4"
-  memory_limit          = "2Gi"
+  memory_limit          = "4Gi"
   startup_cpu_boost     = true
   allow_public          = false
   allowed_invokers      = [module.pubsub_invoker_sa.email]

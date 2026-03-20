@@ -22,6 +22,12 @@ variable "container_port" {
   default     = null
 }
 
+variable "container_concurrency" {
+  type        = number
+  description = "Maximum concurrent requests handled by a single instance"
+  default     = null
+}
+
 variable "environment_variables" {
   type        = map(string)
   description = "Environment variables for the container"
