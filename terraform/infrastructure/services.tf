@@ -99,7 +99,7 @@ module "act_adk_worker_service" {
   min_instances         = 1
   max_instances         = 10
   vpc_connector_id      = google_vpc_access_connector.redis_connector.id
-  ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  ingress               = "INGRESS_TRAFFIC_ALL"
   allowed_invokers      = [module.act_api_sa.email]
 
   environment_variables = {
