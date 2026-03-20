@@ -41,3 +41,12 @@ plan.out
 
 # Exception: allow .example files for templates
 !**/tfvars/*.tfvars.example
+
+.pytest_cache/
+coverage.xml
+htmlcov/
+node_modules/
+dist/
+build/
+*.log
+*.tsbuildinfo   
