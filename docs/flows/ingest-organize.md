@@ -94,5 +94,5 @@ Action は、重い履歴取り込みと単発ファイル追加を別入口に�
 
 ## 詳細仕様
 
-- 詳細設計: [organize-ingest-llm-architecture.md](/home/unix/Action/ActionOrganize/docs/organize-ingest-llm-architecture.md)
-- 詳細フロー: [ingest-organize-flow.md](/home/unix/Action/ActionOrganize/docs/ingest-organize-flow.md)
+- 詳細設計: [organize-ingest-llm-architecture.md](../../ActionOrganize/docs/organize-ingest-llm-architecture.md)
+- 詳細フロー: [ingest-organize-flow.md](../../ActionOrganize/docs/ingest-organize-flow.md)

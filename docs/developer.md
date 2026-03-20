@@ -4,7 +4,7 @@
 
 ## Docker Compose
 
-ローカル起動用の compose は [compose.yaml](/home/unix/Action/compose.yaml) にあります。
+ローカル起動用の compose は [compose.yaml](../compose.yaml) にあります。
 
 この repo の現状では、compose でそのまま参照できる実装ディレクトリは次の 5 つです。
 
@@ -170,10 +170,10 @@ Optional override:
 ## 補足
 
 * `frontend` の公開設定は JSON 正本で管理しています
-* `full` profile では [docker/pubsub/init.sh](/home/unix/Action/docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
+* `full` profile では [docker/pubsub/init.sh](../docker/pubsub/init.sh) が `mind-events` と各 subscription を bootstrap します
 * `action-ingest` は `INGEST_INPUT_FILE` を与えたときだけ実行されます
 * `Add Source` の upload は `ActionIngest` を通らず、`act-api -> media.received -> A0 -> input.received` の経路で Organize に入ります
 * `discord-bot` は `full` profile で起動し、Discord message を `mind-events` に publish します
-* Firebase の最小設定は [docker/firebase/firebase.json](/home/unix/Action/docker/firebase/firebase.json) にあります
+* Firebase の最小設定は [docker/firebase/firebase.json](../docker/firebase/firebase.json) にあります
 * `full` profile の emulator image には Java を同梱しているため、追加の Java セットアップなしで起動できます
 * `organize` 単体開発で emulator を使わない場合は、`STATE_BACKEND=memory` でも起動できます

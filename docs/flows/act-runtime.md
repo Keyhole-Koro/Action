@@ -51,6 +51,6 @@ Action の対話系は、画面、認証付き API、LLM 実行 worker を分け
 
 ## 関連資料
 
-- Act API: [ActionAct/act-api/README.md](/home/unix/Action/ActionAct/act-api/README.md)
-- ADK Worker: [ActionAct/act-adk-worker/README.md](/home/unix/Action/ActionAct/act-adk-worker/README.md)
-- Frontend 仕様: [frontend-spec.md](/home/unix/Action/ActionAct/frontend/frontend-spec.md)
+- Act API: [ActionAct/act-api/README.md](../../ActionAct/act-api/README.md)
+- ADK Worker: [ActionAct/act-adk-worker/README.md](../../ActionAct/act-adk-worker/README.md)
+- Frontend 仕様: [frontend-spec.md](../../ActionAct/frontend/frontend-spec.md)

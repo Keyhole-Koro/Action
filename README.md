@@ -11,25 +11,25 @@ Action は、情報探索と知識整理を分離しつつ、同じ knowledge gr
 
 ルートディレクトリの役割は次のとおりです。
 
-- [ActionAct](/home/unix/Action/ActionAct)
+- [ActionAct](./ActionAct)
   - 実行層です
   - `frontend`, `act-api`, `act-adk-worker` を含みます
-- [ActionOrganize](/home/unix/Action/ActionOrganize)
+- [ActionOrganize](./ActionOrganize)
   - knowledge pipeline です
   - Organize 本体と `discord-bot` を含みます
-- [ActionIngest](/home/unix/Action/ActionIngest)
+- [ActionIngest](./ActionIngest)
   - large import 用の ingest 入口です
-- [docs](/home/unix/Action/docs)
+- [docs](./docs)
   - 全体構成、flow、integration、architecture、security の説明です
-- [terraform](/home/unix/Action/terraform)
+- [terraform](./terraform)
   - GCP 上の実行基盤と IAM の定義です
-- [docker](/home/unix/Action/docker)
+- [docker](./docker)
   - ローカル開発用の emulator と bootstrap です
-- [contracts](/home/unix/Action/contracts)
+- [contracts](./contracts)
   - 契約や共有インターフェースの配置先です
-- [config](/home/unix/Action/config)
+- [config](./config)
   - 実行環境ごとの設定を置くためのディレクトリです
-- [tmp](/home/unix/Action/tmp)
+- [tmp](./tmp)
   - 旧仕様や作業用メモの参照先です
   - 現在の公開 docs の正本ではありません
 
@@ -52,31 +52,31 @@ Action の主要 runtime は次のように分かれています。
 
 ## Docs Routing
 
-`docs/` の入口は [docs/README.md](/home/unix/Action/docs/README.md) です。
+`docs/` の入口は [docs/README.md](./docs/README.md) です。
 
 主な資料:
 
-- [docs/overview.md](/home/unix/Action/docs/overview.md)
+- [docs/overview.md](./docs/overview.md)
   - 全体像
-- [docs/flows/ingest-organize.md](/home/unix/Action/docs/flows/ingest-organize.md)
+- [docs/flows/ingest-organize.md](./docs/flows/ingest-organize.md)
   - ingest と Add Source の知識化フロー
-- [docs/flows/act-runtime.md](/home/unix/Action/docs/flows/act-runtime.md)
+- [docs/flows/act-runtime.md](./docs/flows/act-runtime.md)
   - Act 実行フロー
-- [docs/integrations/discord.md](/home/unix/Action/docs/integrations/discord.md)
+- [docs/integrations/discord.md](./docs/integrations/discord.md)
   - Discord integration
-- [docs/robustness.md](/home/unix/Action/docs/robustness.md)
+- [docs/robustness.md](./docs/robustness.md)
   - 堅牢性の設計
-- [docs/google-stack.md](/home/unix/Action/docs/google-stack.md)
+- [docs/google-stack.md](./docs/google-stack.md)
   - Google 技術の役割分担
-- [docs/security.md](/home/unix/Action/docs/security.md)
+- [docs/security.md](./docs/security.md)
   - セキュリティ境界
-- [docs/glossary.md](/home/unix/Action/docs/glossary.md)
+- [docs/glossary.md](./docs/glossary.md)
   - 用語集
-- [docs/architecture-diagrams.md](/home/unix/Action/docs/architecture-diagrams.md)
+- [docs/architecture-diagrams.md](./docs/architecture-diagrams.md)
   - 全体構成図と主要フロー図
-- [docs/limitations-and-roadmap.md](/home/unix/Action/docs/limitations-and-roadmap.md)
+- [docs/limitations-and-roadmap.md](./docs/limitations-and-roadmap.md)
   - 現在の制約と拡張方向
 
 ## Development
 
-ローカル起動、Docker Compose、開発用設定は [docs/developer.md](/home/unix/Action/docs/developer.md) を参照してください。
+ローカル起動、Docker Compose、開発用設定は [docs/developer.md](./docs/developer.md) を参照してください。

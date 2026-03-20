@@ -198,8 +198,8 @@ Action の堅牢性は、複数の入力経路を内部では canonical event �
 
 ## 関連資料
 
-- 全体像: [overview.md](/home/unix/Action/docs/overview.md)
-- Ingest / Organize: [ingest-organize.md](/home/unix/Action/docs/flows/ingest-organize.md)
-- Act Runtime: [act-runtime.md](/home/unix/Action/docs/flows/act-runtime.md)
-- Discord: [discord.md](/home/unix/Action/docs/integrations/discord.md)
-- Security: [security.md](/home/unix/Action/docs/security.md)
+- 全体像: [overview.md](./overview.md)
+- Ingest / Organize: [ingest-organize.md](./flows/ingest-organize.md)
+- Act Runtime: [act-runtime.md](./flows/act-runtime.md)
+- Discord: [discord.md](./integrations/discord.md)
+- Security: [security.md](./security.md)
