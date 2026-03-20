@@ -257,7 +257,43 @@ Cloud Run 上で環境変数 `GOOGLE_API_KEY_SECRET_ID` が設定されている
 
 ---
 
-## トラブルシューティング
+## 6. セキュリティ運用
+
+本リポジトリの本番デプロイでは、認証情報の置き場所と公開境界を曖昧にしないことを優先します。
+
+### 6.1 認証とデプロイ権限
+
+- GitHub Actions から GCP へ接続するときは、長期鍵ではなく Workload Identity Federation を使います。
+- `GCP_DEPLOYER_SA` には必要最小限の権限だけを付与し、Editor のような広すぎるロールは避けてください。
+- 個人の `gcloud auth login` は初期構築や緊急対応に限定し、通常運用は GitHub Actions 経由に寄せます。
+
+### 6.2 シークレットの扱い
+
+- `google_api_key` のような秘密値は Secret Manager で管理し、`terraform.tfvars` の平文配布や commit は行わないでください。
+- frontend 用の Firebase 設定値は公開前提の構成値ですが、サーバー側シークレットと同じ場所に混在させないでください。
+- ローカル開発用の `.env` や `terraform.tfvars` は Git 管理外に置き、共有時は安全な経路を使ってください。
+
+### 6.3 ネットワーク境界
+
+- `act_api_cors_allowed_origins` には実際に許可する origin だけを明示し、ワイルドカード運用は避けてください。
+- Cloud Run の公開設定はサービスごとに見直し、外部公開が不要なものは unauthenticated access を許可しないでください。
+- Redis や内部 API は、Cloud Run のサービスアカウントと VPC 接続を前提に閉じた経路で扱ってください。
+
+### 6.4 監査とローテーション
+
+- API key や deploy 権限を持つサービスアカウントは、定期的に棚卸ししてください。
+- インシデント時に追跡できるよう、Cloud Run revision、Terraform apply、Secret の更新履歴を運用ログとして残してください。
+- 漏えいの疑いがある場合は、Secret の新バージョン発行と再デプロイを同じ変更手順に含めてください。
+
+### 6.5 このリポジトリでの実務ルール
+
+- 必須環境変数に fallback を入れず、missing 時は起動または初期化で明示的に失敗させます。
+- 秘密値を frontend bundle に入れないでください。公開してよい値は frontend JSON config に限定します。
+- 認証やセッションの境界を変更する場合は、frontend と act-api の両方の仕様と実装を同時に確認してください。
+
+---
+
+## 7. トラブルシューティング
 
 ### Terraform state がロック状態
 

@@ -100,6 +100,7 @@ module "act_adk_worker_service" {
   max_instances         = 10
   vpc_connector_id      = google_vpc_access_connector.redis_connector.id
   ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  allowed_invokers      = [module.act_api_sa.email]
 
   environment_variables = {
     REDIS_ADDR           = "${google_redis_instance.main.host}:6379"
