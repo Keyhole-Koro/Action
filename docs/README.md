@@ -47,6 +47,7 @@
 ## Related
 
 - ルートセットアップ: [README.md](/home/unix/Action/README.md)
+- 開発向け資料: [developer.md](/home/unix/Action/docs/developer.md)
 - デプロイ手順: [DEPLOYMENT.md](/home/unix/Action/DEPLOYMENT.md)
 - Frontend 仕様: [frontend-spec.md](/home/unix/Action/ActionAct/frontend/frontend-spec.md)
 - Organize 詳細設計: [organize-ingest-llm-architecture.md](/home/unix/Action/ActionOrganize/docs/organize-ingest-llm-architecture.md)
