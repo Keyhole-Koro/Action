@@ -8,16 +8,20 @@
 1. [Overview](./overview.md)
 2. [Hackathon Narrative](./hackathon.md)
 3. [Robustness Design](./robustness.md)
-4. [Ingest / Organize Flow](./flows/ingest-organize.md)
-5. [Act Runtime Flow](./flows/act-runtime.md)
-6. [Discord Integration](./integrations/discord.md)
-7. [Security Overview](./security.md)
+4. [Google Stack](./google-stack.md)
+5. [Glossary](./glossary.md)
+6. [Ingest / Organize Flow](./flows/ingest-organize.md)
+7. [Act Runtime Flow](./flows/act-runtime.md)
+8. [Discord Integration](./integrations/discord.md)
+9. [Security Overview](./security.md)
 
 ## この docs が対象にしていること
 
 - Action が何をするシステムか
 - ハッカソン審査でどう見せるか
 - 堅牢性をどう設計し、どう実装したか
+- Google 技術をどこでどう使っているか
+- 用語の意味
 - どのコンポーネントがどう連携するか
 - ingest / organize の処理がどう進むか
 - frontend / act-api / act-adk-worker の役割分担
