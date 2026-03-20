@@ -52,7 +52,7 @@ service cloud.firestore {
     // Collection Group Query for members
     match /{path=**}/members/{memberId} {
       allow read: if isAuthenticated() &&
-        (resource.data.uid == request.auth.uid || isMember(path[path.size() - 3]));
+        (resource.data.uid == request.auth.uid || isMember(path[path.size() - 1]));
     }
 
     match /workspaces/{workspaceId} {
