@@ -10,10 +10,12 @@
 3. [Robustness Design](./robustness.md)
 4. [Google Stack](./google-stack.md)
 5. [Glossary](./glossary.md)
-6. [Ingest / Organize Flow](./flows/ingest-organize.md)
-7. [Act Runtime Flow](./flows/act-runtime.md)
-8. [Discord Integration](./integrations/discord.md)
-9. [Security Overview](./security.md)
+6. [Limitations and Roadmap](./limitations-and-roadmap.md)
+7. [Architecture Diagrams](./architecture-diagrams.md)
+8. [Ingest / Organize Flow](./flows/ingest-organize.md)
+9. [Act Runtime Flow](./flows/act-runtime.md)
+10. [Discord Integration](./integrations/discord.md)
+11. [Security Overview](./security.md)
 
 ## この docs が対象にしていること
 
@@ -22,6 +24,8 @@
 - 堅牢性をどう設計し、どう実装したか
 - Google 技術をどこでどう使っているか
 - 用語の意味
+- 今の制約と今後の拡張余地
+- スライドにそのまま使える図
 - どのコンポーネントがどう連携するか
 - ingest / organize の処理がどう進むか
 - frontend / act-api / act-adk-worker の役割分担
