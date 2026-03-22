@@ -14,6 +14,7 @@ variable "required_apis" {
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "firestore.googleapis.com",
+    "identitytoolkit.googleapis.com",
     "aiplatform.googleapis.com",
   ]
 }

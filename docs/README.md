@@ -14,6 +14,7 @@
 
 - [Ingest / Organize Flow](./flows/ingest-organize.md)
 - [Act Runtime Flow](./flows/act-runtime.md)
+- [Context Management Flow](./flows/context-management.md)
 
 ### Integrations
 
@@ -24,6 +25,7 @@
 - [Robustness Design](./robustness.md)
 - [Google Stack](./google-stack.md)
 - [Architecture Diagrams](./architecture-diagrams.md)
+- [Action GCP Draw.io Diagram](./action-gcp-architecture.drawio)
 - [Limitations and Roadmap](./limitations-and-roadmap.md)
 
 ### Security

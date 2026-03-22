@@ -66,6 +66,12 @@ resource "google_project_iam_member" "act_api_firestore" {
   member  = "serviceAccount:${module.act_api_sa.email}"
 }
 
+resource "google_project_iam_member" "act_api_firebase_auth" {
+  project = var.project_id
+  role    = "roles/firebaseauth.viewer"
+  member  = "serviceAccount:${module.act_api_sa.email}"
+}
+
 resource "google_project_iam_member" "act_api_storage" {
   project = var.project_id
   role    = "roles/storage.objectAdmin"
