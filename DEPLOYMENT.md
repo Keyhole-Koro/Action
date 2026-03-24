@@ -134,8 +134,6 @@ project_id   = "action-490203"
 region       = "asia-northeast1"
 image_tag    = "v1.0.0"  # または git SHA など
 github_repo  = "your-org/Action"
-discord_bot_zone = "asia-northeast1-b"  # asia-northeast1-a で在庫不足なら切り替える
-discord_bot_machine_type = "e2-small"
 ```
 
 ### 2.3 Terraform 実行

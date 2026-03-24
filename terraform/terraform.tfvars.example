@@ -3,8 +3,6 @@
 
 project_id                = "action-490203"
 region                    = "asia-northeast1"
-discord_bot_zone          = "asia-northeast1-b"
-discord_bot_machine_type  = "e2-small"
 github_repo               = "Keyhole-Koro/Action"
 redis_memory_size_gb      = 1
 gemini_model_fast         = "gemini-3-flash-preview"
